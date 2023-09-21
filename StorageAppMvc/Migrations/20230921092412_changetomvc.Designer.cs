@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StorageAppMvc.Data;
 
@@ -11,9 +12,11 @@ using StorageAppMvc.Data;
 namespace StorageSystem.Migrations
 {
     [DbContext(typeof(StorageDb))]
-    partial class StorageDbModelSnapshot : ModelSnapshot
+    [Migration("20230921092412_changetomvc")]
+    partial class changetomvc
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,6 +70,9 @@ namespace StorageSystem.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ItemId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -78,6 +84,8 @@ namespace StorageSystem.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ContainerId");
+
+                    b.HasIndex("ItemId");
 
                     b.ToTable("Items");
                 });
@@ -140,6 +148,10 @@ namespace StorageSystem.Migrations
                     b.HasOne("StorageAppMvc.Domain.Container", null)
                         .WithMany("Items")
                         .HasForeignKey("ContainerId");
+
+                    b.HasOne("StorageAppMvc.Domain.Item", null)
+                        .WithMany("Items")
+                        .HasForeignKey("ItemId");
                 });
 
             modelBuilder.Entity("StorageAppMvc.Domain.Room", b =>
@@ -150,6 +162,11 @@ namespace StorageSystem.Migrations
                 });
 
             modelBuilder.Entity("StorageAppMvc.Domain.Container", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("StorageAppMvc.Domain.Item", b =>
                 {
                     b.Navigation("Items");
                 });

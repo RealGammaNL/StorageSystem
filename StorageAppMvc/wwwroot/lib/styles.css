@@ -1,0 +1,125 @@
+﻿.Items{
+    width: 40%;
+    /*float: left;*/
+}
+
+.Items-Containers{
+    display:flex;
+    justify-content: space-between; 
+}
+
+.Items > label {
+    font-weight: bold;
+}
+
+.Item-Line {
+    border-radius:4px;
+    display: flex;
+    justify-content: space-between;
+    background-color: orange;
+    border-bottom: solid;
+    padding: 5px;
+    margin:4px;
+}
+
+.Item-Name{
+    flex-grow:1;
+}
+.Item-Right{
+    display:flex;
+}
+
+.Containers > label {
+    font-weight: bold;
+}
+
+.Containers {
+    width: 40%;
+}
+.Container-Line {
+    border-radius: 4px;
+    width: 100%;
+    background-color: skyblue;
+    border-bottom: solid;
+    border-color:navy;
+    padding: 5px;
+    margin: 4px;
+}
+
+.Container-Line:hover {
+    background-color: cornflowerblue;
+}
+
+.Item-Line:hover {
+    background-color: darkorange;
+}
+
+.Container-Label {
+    font-size: 20px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom:2px;
+}
+
+.Container-Desc {
+    width:100%;
+    font-size: 14px;
+}
+
+.Container-Name {
+    flex-grow: 1;
+}
+
+.Container-Right{
+    display:flex;
+}
+
+.SelectedContainer {
+    background-color: darkcyan
+}
+
+.SelectedContainer:hover {
+    background-color: darkcyan
+}
+
+.SelectedItem {
+    background-color: darkorange
+}
+
+.SelectedItem:hover {
+    background-color: darkorange
+}
+
+.Item-Information-Fields{
+    width:25%;
+}
+
+.Item-Information-Fields-Item {
+    justify-content: space-between;
+    display: flex;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.Item-Information-Fields-Item > label {
+    flex-grow: 1;
+}
+.Item-Information-Fields-Desc {
+    justify-content: space-between;
+    display: flex;
+    margin-right: 5px;
+}
+
+.Item-Information-Fields-Desc > label {
+    flex-grow: 1;
+}
+
+.ItemAddSubmit {
+    margin-top: 15px;
+    width: 25%;
+}
+
+
+
+
+

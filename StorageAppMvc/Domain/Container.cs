@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
-using StorageSystem.Data;
+using StorageAppMvc.Data;
 
-namespace StorageSystem.Models
+namespace StorageAppMvc.Domain
 {
     public class Container : IEntity
     {
@@ -14,6 +14,8 @@ namespace StorageSystem.Models
         public string? Description { get; set; }
         public DateTime AddedOn { get; set; } = DateTime.Now;
         //public Image image { get; set; } ???
+        public int? RoomId { get; set; }
+
         public List<Item>? Items { get; set; } = new List<Item>(); // You can ask for Container.Items to get all of the items.
 
 
@@ -25,12 +27,20 @@ namespace StorageSystem.Models
 
         public void AddItem(Item item)
         {
-
+            Items.Add(item);
+            context.Update(this);
+            context.SaveChanges();
         }
 
-        public void DeleteItem(Item item) 
-        { 
-        
+        public void DeleteItem(Item item)
+        {
+            var tempItem = Items.First(i => i.Id == item.Id);
+            if (tempItem != null)
+            {
+                Items.Remove(tempItem);
+                context.Update(this);
+                context.SaveChanges();
+            }
         }
 
 

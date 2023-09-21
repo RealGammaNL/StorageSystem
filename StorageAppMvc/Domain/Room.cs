@@ -1,7 +1,7 @@
-﻿using StorageSystem.Data;
+﻿using StorageAppMvc.Data;
 using System.ComponentModel.DataAnnotations;
 
-namespace StorageSystem.Models
+namespace StorageAppMvc.Domain
 {
     public class Room : IEntity
     {

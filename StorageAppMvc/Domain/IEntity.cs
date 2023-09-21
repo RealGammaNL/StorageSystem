@@ -1,4 +1,4 @@
-﻿namespace StorageSystem.Models
+﻿namespace StorageAppMvc.Domain
 {
     public interface IEntity
     {

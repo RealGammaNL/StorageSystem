@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+@using StorageAppMvc.Domain
+@model ItemViewModel
+
+
+<h1>Start of item page!</h1>
+<p>We will try to add buttons to create new items</p>
+
+<div class="Item-Information">
+    <form method="post" action="@Url.Action("CreateItem", "Item")" name="ItemPostForm">
+        <div class="Item-Information-Fields">
+            <div class="Item-Information-Fields-Item">
+                <label for="ItemName">Itemname:</label>
+                <input type="text" id="IName" name="Iname" /> <br><br>
+            </div>
+            <div class="Item-Information-Fields-Desc">
+                <label for="Description">Description:</label>
+                <input type="text" id="IDesc" name="IDesc" /> <br><br>
+            </div>
+            <input class="ItemAddSubmit" type="submit" value="Submit" id="ItemAddSubmit" />
+        </div>
+    </form>
+</div>
+
+<form style="display:none" method="post" action="@Url.Action("AddItemToContainer", "Item")">
+    <input type="number" id="ContainerId" name="ContainerId" /> <br /><br />
+    <input type="number" id="ItemId" name="ItemId" /> <br /><br />
+    <input type="submit" value="Submit" id="ItemAddToContainerSubmit"/>
+</form>
+
+<br><br>
+
+<div class="Items-Containers">
+    <div class="Items">
+        <label>Items!</label>
+
+        @foreach (Item i in Model.Items)
+        {
+            <div class="Item-Line" id="@i.Id" onclick="selectItem(this)">
+                <div class="Item-Name">@i.Name : @i.Description</div>
+                <div class="Item-Right">
+                    <div class="Item-Container">C :&#160</div>
+                    <div class="Item-Container-Number">@i.ContainerId</div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="Containers">
+        <label>Containers!</label>
+
+        @foreach (Container c in Model.Containers)
+        {
+            <div class="Container-Line" id="@c.Id" onclick="selectContainer(this)">
+                    <div class="Container-Label">
+                    <div class="Container-Name">C<span>@c.Id</span> : @c.Name</div>
+                        <div class="Container-Right">
+                            <div class="Container-Room">R :&#160</div>
+                            <div class="Container-Room-Number">@c.RoomId</div>
+                        </div>
+                    </div>
+                    <div class="Container-Desc">@c.Description</div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    let selectedContainer = null; // Variable to keep track of the selected container
+    let selectedItem = null; // Variable to keep track of the selected container
+
+    function selectContainer(c) {
+        if (selectedContainer !== null) {
+            selectedContainer.classList.remove("SelectedContainer"); // Remove the class from the previously selected container
+            document.getElementById('ContainerId').value = ""
+        }
+
+        if (c !== selectedContainer) {
+            c.classList.add("SelectedContainer"); // Add the class to the newly selected container
+            selectedContainer = c; // Update the selected container reference
+            document.getElementById('ContainerId').value = c.id
+            AddItem()
+
+        } else {
+            document.getElementById('ContainerId').value = ""
+            selectedContainer = null; // Clicking the same container again deselects it
+        }
+    }
+
+    function selectItem(i) {
+        if (selectedItem !== null) {
+            selectedItem.classList.remove("SelectedItem"); // Remove the class from the previously selected container
+            document.getElementById('ItemId').value = ""
+        }
+
+        if (i !== selectedItem) {
+            i.classList.add("SelectedItem"); // Add the class to the newly selected container
+            selectedItem = i; // Update the selected container reference
+            document.getElementById('ItemId').value = i.id
+            AddItem()
+
+        } else {
+            document.getElementById('ItemId').value = ""
+            selectedItem = null; // Clicking the same container again deselects it
+        }
+    }
+
+    function AddItem() {
+        if (document.getElementById('ItemId').value !== "" && document.getElementById('ContainerId').value !== "") { 
+            document.getElementById('ItemAddToContainerSubmit').click()
+        }
+    }
+</script>
+
+
+
+
+   

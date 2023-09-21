@@ -1,7 +1,7 @@
-﻿using StorageSystem.Data;
+﻿using StorageAppMvc.Data;
 using System.ComponentModel.DataAnnotations;
 
-namespace StorageSystem.Models
+namespace StorageAppMvc.Domain
 {
     public class User : IEntity
     {
@@ -22,9 +22,9 @@ namespace StorageSystem.Models
         {
 
         }
-        public void Logout() 
-        { 
-        
+        public void Logout()
+        {
+
         }
 
         // IEntity methods to CRUD a user //

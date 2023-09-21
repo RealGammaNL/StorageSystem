@@ -1,7 +1,7 @@
-﻿using StorageSystem.Data;
+﻿using StorageAppMvc.Data;
 using System.ComponentModel.DataAnnotations;
 
-namespace StorageSystem.Models
+namespace StorageAppMvc.Domain
 {
     public class Item : IEntity
     {
@@ -9,12 +9,12 @@ namespace StorageSystem.Models
         [Required]
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; } 
+        public string Name { get; set; }
         public string? Description { get; set; }
         public DateTime AddedOn { get; set; } = DateTime.Now;
         //public Image image { get; set; } ???
         public int Quantity { get; set; } = 1;
-        public List<Item>? Items { get; internal set; }
+        public int? ContainerId { get; set; }
 
 
         // Item specific methods //
@@ -23,7 +23,7 @@ namespace StorageSystem.Models
             // if the item is in a container add it to the targetcontainer
             // if the item isnt in a container add it to the targetcontainer
 
-            
+
         }
 
         // IEntity methods to CRUD an item
@@ -63,7 +63,6 @@ namespace StorageSystem.Models
                 itemToUpdate.Name = Name;
                 itemToUpdate.Description = Description;
                 itemToUpdate.Quantity = Quantity;
-                //itemToUpdate.ContainerId = 2; // hoe moet ik dit aanvliegen??????????????????????????????????????????????
 
                 // Update the values
                 context.Update(itemToUpdate);

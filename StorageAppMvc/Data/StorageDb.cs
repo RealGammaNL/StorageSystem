@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StorageSystem.Models;
+using StorageAppMvc.Domain;
 
 
-namespace StorageSystem.Data
+namespace StorageAppMvc.Data
 {
     public class StorageDb : DbContext
     {
