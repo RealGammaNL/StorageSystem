@@ -7,7 +7,7 @@
 
 
 <h1>Start of item page!</h1>
-<p>We will try to add buttons to create new items</p>
+<p>Everything I've learnt so far:</p>
 
 @**@
 @* Hidden Forms, this is my chosen (un-official) method for communicating between Javascript and C# MVC controllers*@
@@ -51,23 +51,23 @@
 </form>
 
 
-
-<div class="Item-Information">
+<!-- HTML COMMENT OLD ITEM CREATE SYSTEM
+@* <div class="Item-Information">
     @* <form method="post" action="@Url.Action("CreateItem", "Item")" name="ItemPostForm"> *@
     <form asp-action="CreateItem">
         <div class="Item-Information-Fields">
             <div class="Item-Information-Fields-Item">
                 <label for="ItemName">Itemname:</label>
-                <input type="text" id="IName" name="Iname" /> <br><br>
+                <input type="text" id="Name" name="Iname" /> <br><br>
             </div>
             <div class="Item-Information-Fields-Desc">
                 <label for="Description">Description:</label>
-                <input type="text" id="IDesc" name="IDesc" /> <br><br>
+                <input type="text" id="Desc" name="Desc" /> <br><br>
             </div>
             <input class="ItemAddSubmit" type="submit" value="Submit" id="ItemAddSubmit" />
         </div>
     </form>
-</div>
+</div> -->
 
 
 
@@ -76,10 +76,28 @@
 <div class="Items-Containers">
     <div class="Items">
         <div class="Small-Item-Header">
-            <label>Items!</label>
-            <i class="fa-solid fa-plus"></i>
+            <div><label>Items!</label></div>
+            <div>Create Item&#160<button class="Icon-Button"><i class="fa-solid fa-plus" onclick="document.getElementById('NewItem').style.display = 'inline'"></i></button></div>
         </div>
 
+        <form asp-action="CreateItem" class="Hidden-Forms" id="NewItem">
+            <div class="Item-Line">
+                <div class="Items-Above">
+                    <div class="Item-Left">
+                        <div class="Item-Name" id="Item-Line-Item-Name-1"><input id="itemNameInput-1" name="Name" type="text"></div>
+                        <div>:</div>
+                        <div class="Item-Desc" id="Item-Line-Item-Desc-1"><input id="itemDescInput-1" name="Desc" type="text"></div>
+                    </div>
+                </div>
+                <div class="Icons-Under">
+                    <div class="Item-Edit-Confirm" id="itemEditConfirm-1" style="display: inline;">
+                        <i style="font-weight: bold;">Add? :&nbsp;</i>
+                        <button type="submit" class="Icon-Button"><i class="fa-solid fa-check fa-lg" id="itemEditCheck-1"></i></button>
+                        <button type="reset" class="Icon-Button"><i class="fa-solid fa-xmark fa-lg" id="itemEditCancel-1" onclick="document.getElementById('NewItem').style.display = 'none'"></i></button>
+                    </div>
+                </div>
+            </div>
+        </form>
 
         @foreach (Item i in Model.Items)
         {
@@ -91,7 +109,7 @@
                         <div class="Item-Desc" id="Item-Line-Item-Desc-@i.Id">@i.Description</div>
                     </div>
                     <div class="Item-Right">
-                        <div class="Item-Container">C :&#160</div> @*&#160 is a space character*@
+                        <div class="Item-Container">Container :&#160</div> @*&#160 is a space character*@
                         <div class="Item-Container-Number">@i.ContainerId</div>
                     </div>
                 </div>
@@ -115,7 +133,31 @@
         }
     </div>
     <div class="Containers">
-        <label>Containers!</label>
+        <div class="Small-Item-Header">
+            <div><label>Containers!</label></div>
+            <div>Create Container&#160<button class="Icon-Button"><i class="fa-solid fa-plus" onclick="document.getElementById('NewContainer').style.display = 'inline'"></i></button></div>
+        </div>
+
+        <form asp-controller="Container" asp-action="CreateContainer" class="Hidden-Forms" id="NewContainer">
+            <div class="Container-Line">
+                <div class="Items-Above">
+                    <div class="Container-Label">
+                        <div class="Container-Left">
+                            <div class="Container-Name" id="Container-Line-Container-Name-1"><input id="containerNameInput-1" name="Name" type="text" value="Enter Name:"></div>
+                            <div class="Container-Desc" id="Container-Line-Container-Desc-1"><input id="containerDescInput-1" name="Desc" type="text" value="Enter Description:"></div>
+                        </div>
+                    
+                        <div class="Container-Right">
+                            <div class="Container-Edit-Confirm" id="containerEditConfirm-1" style="display: inline;">
+                                <i style="font-weight: bold;">Add? :&nbsp;</i>
+                                <button type="submit" class="Icon-Button"><i class="fa-solid fa-check fa-lg" id="containerEditCheck-1"></i></button>
+                                <button type="reset" class="Icon-Button"><i class="fa-solid fa-xmark fa-lg" id="containerEditCancel-1" onclick="document.getElementById('NewContainer').style.display = 'none'"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
 
         @foreach (Container c in Model.Containers)
         {
@@ -374,6 +416,12 @@
             return;
         }
     }
+
+    // function ShowNewItem() 
+    // {
+    //     window.alert( "ik kom hier")
+    //     document.getElementById('NewItem').style.display = "inline"
+    // }
 </script>
 
 

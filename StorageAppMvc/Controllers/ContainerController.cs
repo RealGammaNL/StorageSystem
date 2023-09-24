@@ -27,6 +27,16 @@ namespace StorageAppMvc.Controllers
         }
 
         [HttpPost]
+        public IActionResult CreateContainer(string Name, string Desc)
+        {
+            Container container = new Container(Name, Desc);
+            _context.Add(container);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Item");
+        }
+
+        [HttpPost]
         public IActionResult Delete(int? id)
         {
             Container container = _context.Containers.First(c => c.Id == id); // Find the container that is has this Id

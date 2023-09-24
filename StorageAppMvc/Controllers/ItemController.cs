@@ -33,9 +33,9 @@ namespace StorageAppMvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateItem(string IName, string IDesc) 
+        public IActionResult CreateItem(string Name, string Desc) 
         { 
-            Item item = new Item(IName, IDesc);
+            Item item = new Item(Name, Desc);
             _context.Add(item);
             _context.SaveChanges();
 

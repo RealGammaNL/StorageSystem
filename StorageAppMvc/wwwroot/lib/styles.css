@@ -45,7 +45,7 @@
     width: 100%;
     background-color: skyblue;
     border-bottom: solid;
-    border-color:navy;
+    border-color: navy;
     padding: 5px;
     margin: 4px;
 }
@@ -123,9 +123,17 @@
     width: 25%;
 }
 
+
+/*.Icons-Under-Container {
+    display: inline;
+    flex:1;
+}*/
+
 .Icons-Under {
-    display:inline;
+    display: inline;
 }
+
+
 .Icons-Under > img {
     width: 25px;
     height: 25px;
@@ -184,8 +192,19 @@
     font-weight: bold;
 }
 
+.Small-Item-Header label {
+    flex: 1;
+    margin-left: 5px;
+}
+
 .Small-Item-Header i{
     flex: 1;
+    margin-right: 5px;
+}
+
+.Icon-Button {
+    border:none;
+    background: none;
 }
 
 
