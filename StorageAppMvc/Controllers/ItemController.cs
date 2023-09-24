@@ -52,6 +52,29 @@ namespace StorageAppMvc.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult Delete(int? id)
+        {
+            Item item = _context.Items.First(i => i.Id == id);
+            _context.Remove(item);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+
+        }
+
+        [HttpPost]
+        public IActionResult Edit(string Name, string Desc, int id) {
+            Item item = _context.Items.First(i => i.Id == id);
+            item.Name = Name;
+            item.Description = Desc;
+
+            _context.Update(item);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -9,6 +9,49 @@
 <h1>Start of item page!</h1>
 <p>We will try to add buttons to create new items</p>
 
+@**@
+@* Hidden Forms, this is my chosen (un-official) method for communicating between Javascript and C# MVC controllers*@
+@**@
+
+
+<form method="post" class="Hidden-Forms" action="@Url.Action("AddItemToContainer", "Item")">
+    @*AddItemToContainer is the method in the Item controller*@
+
+    <input type="number" id="ContainerId" name="ContainerId" />
+    <input type="number" id="ItemId" name="ItemId" />@*ItemId is the parameter in the AddItemToContainer method in ItemController*@
+    <input type="submit" id="ItemAddToContainerSubmit" /> @*submit is the input type, it makes sure this form gets posted to the ItemController*@
+</form>
+
+<form method="post" class="Hidden-Forms" action="@Url.Action("Delete", "Item")">
+    <input type="number" id="ItemIdDelete" name="id" />
+    <input type="submit" id="ItemDelete" />
+</form>
+
+<form method="post" class="Hidden-Forms" action="@Url.Action("Delete", "Container")">
+    <input type="number" id="ContainerIdDelete" name="id" />
+    <input type="submit" id="ContainerDelete" />
+</form>
+
+<form method="post" class="Hidden-Forms" action="@Url.Action("Edit", "Item")">
+    <input type="text" id="EditItemName" name="Name" />
+    <input type="text" id="EditItemDesc" name="Desc" />
+    <input type="number" id="EditItemId" name="id" />
+    <input type="submit" id="EditItem" />
+</form>
+
+<form method="post" class="Hidden-Forms" action="@Url.Action("Edit", "Container")">
+    <input type="text" id="EditContainerName" name="Name" />
+    <input type="text" id="EditContainerDesc" name="Desc" />
+    <input type="number" id="EditContainerId" name="id" />
+    <input type="submit" id="EditContainer" />
+</form>
+
+<form class="Hidden-Forms" action="@Url.Action("Index", "Item")">
+    <input type="submit" id="ReloadPage" />
+</form>
+
+
+
 <div class="Item-Information">
     @* <form method="post" action="@Url.Action("CreateItem", "Item")" name="ItemPostForm"> *@
     <form asp-action="CreateItem">
@@ -26,41 +69,47 @@
     </form>
 </div>
 
-<form method="post" action="@Url.Action("AddItemToContainer", "Item")">
-    <input type="number" id="ContainerId" name="ContainerId" /> <br /><br />
-    <input type="number" id="ItemId" name="ItemId" /> <br /><br />
-    <input type="submit" value="Submit" id="ItemAddToContainerSubmit"/>
-</form>
 
-<form style="display:none" asp-controller="Items" asp-action="Delete">
-    <input type="number" id="ItemId" name="ItemId" /> <br /><br />
-    <input type="submit" value="Delete" id="ItemDelete" />
-</form>
-
-<form style="display:none" action="@Url.Action("Delete", "Containers")">
-    <input type="number" id="ContainerId" name="ContainerId" /> <br /><br />
-    <input type="submit" value="Delete" id="ContainerDelete" />
-</form>
 
 <br><br>
 
 <div class="Items-Containers">
     <div class="Items">
-        <label>Items!</label>
+        <div class="Small-Item-Header">
+            <label>Items!</label>
+            <i class="fa-solid fa-plus"></i>
+        </div>
+
 
         @foreach (Item i in Model.Items)
         {
             <div class="Item-Line" id="@i.Id" onclick="selectItem(this)">
                 <div class ="Items-Above">
-                    <div class="Item-Name" id="Item-Line-Item-Name">@i.Name : @i.Description</div>
+                    <div class="Item-Left">
+                        <div class="Item-Name" id="Item-Line-Item-Name-@i.Id">@i.Name</div>
+                        <div>:</div>
+                        <div class="Item-Desc" id="Item-Line-Item-Desc-@i.Id">@i.Description</div>
+                    </div>
                     <div class="Item-Right">
-                        <div class="Item-Container">C :&#160</div>
+                        <div class="Item-Container">C :&#160</div> @*&#160 is a space character*@
                         <div class="Item-Container-Number">@i.ContainerId</div>
                     </div>
                 </div>
                 <div class="Icons-Under">
-                    <img src="images/pencil-icon.png" onclick="ItemEditClick" id="ItemEditImg">
-                    <img src="images/trashcan-icon.png" onclick="DeleteItemClick(this)" id="@i.Id">
+                    <img src="images/pencil-icon.png" onclick="EditClick('item', @i.Id)" id="ItemEditImg-@i.Id">
+                    <img src="images/trashcan-icon.png" onclick="DeleteClick('item', @i.Id)" id="ItemDeleteImg-@i.Id">
+
+                    <div class="Item-Edit-Confirm" id="itemEditConfirm-@i.Id">
+                        <i style="font-weight: bold;">Confirm edit? :&#160</i>
+                        <i class="fa-solid fa-check fa-lg" id="itemEditCheck-@i.Id" onclick="EditConfirm('confirm', 'item', @i.Id)"></i>
+                        <i class="fa-solid fa-xmark fa-lg" id="itemEditCancel-@i.Id" onclick="EditConfirm('cancel', 'item', @i.Id)"></i>
+                    </div>
+
+                    <div class ="Item-Delete-Confirm" id="itemDeleteConfirm-@i.Id">
+                        <i style="font-weight: bold;">Confirm delete? :&#160</i>
+                        <i class="fa-solid fa-check fa-lg" id="itemDeleteCheck-@i.Id" onclick="DeleteConfirm('confirm', 'item', @i.Id)"></i>
+                        <i class="fa-solid fa-xmark fa-lg" id="itemDeleteCancel-@i.Id" onclick="DeleteConfirm('cancel', 'item', @i.Id)"></i>
+                    </div>
                 </div>
             </div>
         }
@@ -73,25 +122,42 @@
             <div class="Container-Line" id="@c.Id" onclick="selectContainer(this)">
                 <div class="Items-Above">
                     <div class="Container-Label">
-                    <div class="Container-Name">C<span>@c.Id</span> : @c.Name</div>
+                        <div>C<span>@c.Id</span>:&#160</div>
+                        <div class="Container-Name" id="Container-Line-Container-Name-@c.Id">@c.Name</div>
                         <div class="Container-Right">
                             @* <div class="Container-Room">R :&#160</div> *@
                             @* <div class="Container-Room-Number">@c.RoomId</div> *@
-                            <img src="images/pencil-icon.png" onclick="ContainerEditClick" id="ContainerEditImg">
-                            <img src="images/trashcan-icon.png" onclick="DeleteContainerClick(this)" id="@c.Id">
+                            <img src="images/pencil-icon.png" onclick="EditClick('container', @c.Id)" id="ContainerEditImg-@c.Id">
+                            <img src="images/trashcan-icon.png" onclick="DeleteClick('container', @c.Id)" id="ContainerDeleteImg-@c.Id">
+
+                            <div class="Container-Edit-Confirm" id="containerEditConfirm-@c.Id">
+                                <i style="font-weight: bold;">Confirm edit? :&#160</i>
+                                <i class="fa-solid fa-check fa-lg" id="containerEditCheck-@c.Id" onclick="EditConfirm('confirm', 'container' , @c.Id)"></i>
+                                <i class="fa-solid fa-xmark fa-lg" id="containerEditCancel-@c.Id" onclick="EditConfirm('cancel', 'container' , @c.Id)"></i>
+                            </div>
+
+                            <div class="Container-Delete-Confirm" id="containerDeleteConfirm-@c.Id">
+                                <i style="font-weight: bold;">Confirm delete? :&#160</i>
+                                <i class="fa-solid fa-check fa-lg" id="containerDeleteCheck-@c.Id" onclick="DeleteConfirm('confirm', 'container', @c.Id)"></i>
+                                <i class="fa-solid fa-xmark fa-lg" id="containerDeleteCancel-@c.Id" onclick="DeleteConfirm('cancel', 'container', @c.Id)"></i>
+                            </div>
                         </div>
                     </div>
-                    <div class="Container-Desc">@c.Description</div>
+                    <div class="Container-Desc" id="Container-Line-Container-Desc-@c.Id">@c.Description</div>
                 </div>
             </div>
         }
     </div>
 </div>
 
+
 <script>
     let selectedContainer = null; // Variable to keep track of the selected container
     let selectedItem = null; // Variable to keep track of the selected container
 
+    //
+    // Adding items to containers
+    //
     function selectContainer(c) {
         if (selectedContainer !== null) {
             selectedContainer.classList.remove("SelectedContainer"); // Remove the class from the previously selected container
@@ -134,23 +200,180 @@
         }
     }
 
-    function DeleteItemClick(i) {
-        document.getElementById('ItemId').value = i.i d
+    //
+    // Pressing the delete icon on an item or container
+    //
 
-        if (document.getElementById('ItemId').value !== "" && document.getElementById('ContainerId').value == "") { 
-            document.getElementById('ItemDelete').click()
+    // function DeleteItemClick(i) {
+    //     var inputString = i.id
+    //     var parts = inputString.split('-');
+    //     var stringNumber = parts[1];
+
+    //     i.style.display = "none";
+    //     document.getElementById("ItemEditImg-" + stringNumber).style.display = "none";
+
+    //     document.getElementById("itemDeleteConfirm-" + stringNumber).style.display = "inline";
+    // }
+
+    // function DeleteContainerClick(c) {
+    //     var inputString = c.id
+    //     var parts = inputString.split('-');
+    //     var stringNumber = parts[1];
+
+    //     c.style.display = "none";
+    //     document.getElementById("ContainerEditImg-" + stringNumber).style.display = "none";
+
+    //     document.getElementById("containerDeleteConfirm-" + stringNumber).style.display = "inline";
+    // }
+
+    // The comments above have been replaced by this function.
+    // This function HIDES the edit and remove icon and replaces it for a checkmark and a cancel icon.
+
+    function DeleteClick(entity, id) {
+        // entity being: the user clicked on either an item or a container.
+        // id being: the id of the item the user clicked on.
+
+        if (entity === 'item') {
+            document.getElementById("ItemEditImg-" + id).style.display = "none";
+            document.getElementById("ItemDeleteImg-" + id).style.display = "none";
+            document.getElementById("itemDeleteConfirm-" + id).style.display = "inline";
+            return;
+        }
+
+        if (entity === 'container') {
+            document.getElementById("ContainerEditImg-" + id).style.display = "none";
+            document.getElementById("ContainerDeleteImg-" + id).style.display = "none";
+            document.getElementById("containerDeleteConfirm-" + id).style.display = "inline";
+            return;
         }
     }
 
-    function DeleteContainerClick(c) {
-        document.getElementById('ContainerId').value = c.id
+    function DeleteConfirm(action, entity, id) {
+        if (entity === "item") {
+            if (action === "confirm") {
+                document.getElementById('ItemIdDelete').value = id
+                document.getElementById('ItemDelete').click()
+            }
 
-        if (document.getElementById('ItemId').value == "" && document.getElementById('ContainerId').value !== "") {
-            document.getElementById('ContainerDelete').click()
+            if (action === "cancel") { document.getElementById('ReloadPage').click() }
+            return;
+        }
+
+        if (entity === "container") {
+            if (action === "confirm") {
+                document.getElementById('ContainerIdDelete').value = id
+                document.getElementById('ContainerDelete').click()
+            }
+
+            if (action === "cancel") { document.getElementById('ReloadPage').click() }
+            return;
         }
     }
 
+    function EditClick(entity, id) {
+        if (entity === 'item')
+        {
+            // Hide the edit and delete icon and replace for checkmark and cancel icon
+            document.getElementById("ItemEditImg-" + id).style.display = "none";
+            document.getElementById("ItemDeleteImg-" + id).style.display = "none";
+            document.getElementById("itemEditConfirm-" + id).style.display = "inline";
 
+
+            // Find the element on Item-Line that contains the name, same for description
+            var itemNameElement = document.getElementById('Item-Line-Item-Name-' + id)
+            var itemDescElement = document.getElementById('Item-Line-Item-Desc-' + id)
+
+            // Find the text in the element for name, same for description
+            var itemNameText = itemNameElement.textContent.trim();
+            var itemDescText = itemDescElement.textContent.trim();
+
+            // Create one input per element we want to make edit-able
+            var itemNameInput = document.createElement("input");
+            var itemDescInput = document.createElement("input");
+
+            // Make them unique
+            itemNameInput.id = "itemNameInput-" + id;
+            itemDescInput.id = "itemDescInput-" + id;
+
+            // Set the input to the same text as the element it was just created out of.
+            itemNameInput.type = "text";
+            itemNameInput.value = itemNameText;
+
+            // Put the input over the div.
+            itemNameElement.innerHTML = "";
+            itemNameElement.appendChild(itemNameInput);
+
+            // Same for description
+            itemDescInput.type = "text";
+            itemDescInput.value = itemDescText;
+
+            itemDescElement.innerHTML = "";
+            itemDescElement.appendChild(itemDescInput);
+            return;
+        }
+
+        // Same for container
+        if (entity === 'container') {
+            document.getElementById("ContainerEditImg-" + id).style.display = "none";
+            document.getElementById("ContainerDeleteImg-" + id).style.display = "none";
+            document.getElementById("containerEditConfirm-" + id).style.display = "inline";
+
+            var containerNameElement = document.getElementById('Container-Line-Container-Name-' + id)
+            var containerDescElement = document.getElementById('Container-Line-Container-Desc-' + id)
+
+            var containerNameText = containerNameElement.textContent.trim();
+            var containerDescText = containerDescElement.textContent.trim();
+
+            var containerNameInput = document.createElement("input");
+            var containerDescInput = document.createElement("input");
+
+            containerNameInput.id = "containerNameInput-" + id;
+            containerDescInput.id = "containerDescInput-" + id;
+
+            containerNameInput.type = "text";
+            containerNameInput.value = containerNameText;
+
+            containerNameElement.innerHTML = "";
+            containerNameElement.appendChild(containerNameInput);
+
+            containerDescInput.type = "text";
+            containerDescInput.value = containerDescText;
+
+            containerDescElement.innerHTML = "";
+            containerDescElement.appendChild(containerDescInput);
+            return;
+        }
+    }
+
+    function EditConfirm(action, entity, id) {
+        if (entity === "item") 
+        {
+            if (action === "confirm") 
+            {
+                document.getElementById('EditItemName').value = document.getElementById('itemNameInput-' + id).value
+                document.getElementById('EditItemDesc').value = document.getElementById('itemDescInput-' + id).value
+                document.getElementById('EditItemId').value = id
+                document.getElementById('EditItem').click()
+            }
+
+            if (action === "cancel") { document.getElementById('ReloadPage').click() }
+            return;
+        }
+
+        if (entity === "container") 
+        {
+            if (action === "confirm") 
+            {
+                document.getElementById('EditContainerName').value = document.getElementById('containerNameInput-' + id).value
+                document.getElementById('EditContainerDesc').value = document.getElementById('containerDescInput-' + id).value
+                document.getElementById('EditContainerId').value = id
+                document.getElementById('EditContainer').click()
+            }
+
+            if (action === "cancel") { document.getElementById('ReloadPage').click() }
+            return;
+        }
+    }
 </script>
 
 

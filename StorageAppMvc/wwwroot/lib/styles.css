@@ -1,5 +1,5 @@
 ﻿.Items{
-    width: 40%;
+    width: 45%;
     /*float: left;*/
 }
 
@@ -8,9 +8,6 @@
     justify-content: space-between; 
 }
 
-.Items > label {
-    font-weight: bold;
-}
 
 .Item-Line {
     border-radius:4px;
@@ -26,6 +23,12 @@
 .Item-Name{
     flex-grow:1;
 }
+
+.Item-Left{
+    display: flex;
+    gap: 5px;
+}
+
 .Item-Right{
     display:flex;
 }
@@ -35,7 +38,7 @@
 }
 
 .Containers {
-    width: 40%;
+    width: 45%;
 }
 .Container-Line {
     border-radius: 4px;
@@ -120,10 +123,14 @@
     width: 25%;
 }
 
+.Icons-Under {
+    display:inline;
+}
 .Icons-Under > img {
     width: 25px;
     height: 25px;
     object-fit: contain;
+    cursor: pointer;
 }
 
 .Icons-Under > img:hover {
@@ -139,6 +146,7 @@
     width: 25px;
     height: 25px;
     object-fit: contain;
+    cursor: pointer;
 }
 
 .Container-Right > img:hover{
@@ -147,6 +155,37 @@
     object-fit: contain;
     border: solid;
     border-radius: 4px;
+}
+
+.Item-Delete-Confirm {
+    display:none;
+}
+
+.Item-Edit-Confirm {
+    display: none;
+}
+
+.Container-Delete-Confirm {
+    display: none;
+}
+
+.Container-Edit-Confirm {
+    display: none;
+}
+
+.Hidden-Forms {
+    display:none;
+}
+
+.Small-Item-Header {
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.Small-Item-Header i{
+    flex: 1;
 }
 
 
