@@ -16,6 +16,12 @@ namespace StorageAppMvc.Domain
         public int Quantity { get; set; } = 1;
         public int? ContainerId { get; set; }
 
+        private readonly StorageDb _context;
+
+        public Item(StorageDb context)
+        {
+            _context = context;
+        }
 
         // Item specific methods //
         public void Move(Container? currentContainer, Container targetContainer)
@@ -27,13 +33,9 @@ namespace StorageAppMvc.Domain
         }
 
         // IEntity methods to CRUD an item
-        private StorageDb context = new StorageDb();
-
         public void Create()
         {
-            // Create the item
-            context.Add(this);
-            context.SaveChanges();
+
         }
 
         public void Delete()
@@ -42,20 +44,20 @@ namespace StorageAppMvc.Domain
             // Therefore we will look for the item in the database that matches the unique Id of the item we present it //
             // The item we find in the database can then be used to remove it //
 
-            var itemToDelete = context.Items.FirstOrDefault(item => item.Id == Id);
+            var itemToDelete = _context.Items.FirstOrDefault(item => item.Id == Id);
 
             // We have to check for null incase it doesn't find anything.
             if (itemToDelete != null)
             {
                 // Remove the item
-                context.Remove(itemToDelete);
-                context.SaveChanges();
+                _context.Remove(itemToDelete);
+                _context.SaveChanges();
             }
         }
 
         public void Update()
         {
-            var itemToUpdate = context.Items.FirstOrDefault(item => item.Id == Id);
+            var itemToUpdate = _context.Items.FirstOrDefault(item => item.Id == Id);
 
             if (itemToUpdate != null)
             {
@@ -65,8 +67,8 @@ namespace StorageAppMvc.Domain
                 itemToUpdate.Quantity = Quantity;
 
                 // Update the values
-                context.Update(itemToUpdate);
-                context.SaveChanges();
+                _context.Update(itemToUpdate);
+                _context.SaveChanges();
             }
         }
 
@@ -94,6 +96,10 @@ namespace StorageAppMvc.Domain
             Description = description;
             Quantity = quantity;
             AddedOn = dateTime;
+        }
+
+        public Item() { 
+        
         }
     }
 }

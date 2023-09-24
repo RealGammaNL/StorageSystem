@@ -18,7 +18,11 @@ namespace StorageAppMvc.Domain
 
         public List<Item>? Items { get; set; } = new List<Item>(); // You can ask for Container.Items to get all of the items.
 
-
+        private readonly StorageDb _context;
+        public Container(StorageDb context)
+        {
+            _context = context;
+        }
         // Container specific methods //
         public void Move(Room currentRoom, Room targetRoom)
         {
@@ -28,8 +32,8 @@ namespace StorageAppMvc.Domain
         public void AddItem(Item item)
         {
             Items.Add(item);
-            context.Update(this);
-            context.SaveChanges();
+            _context.Update(this);
+            _context.SaveChanges();
         }
 
         public void DeleteItem(Item item)
@@ -38,37 +42,36 @@ namespace StorageAppMvc.Domain
             if (tempItem != null)
             {
                 Items.Remove(tempItem);
-                context.Update(this);
-                context.SaveChanges();
+                _context.Update(this);
+                _context.SaveChanges();
             }
         }
 
 
 
         // IEntity methods to CRUD a container //
-        private StorageDb context = new StorageDb();
         public void Create()
         {
-            context.Add(this);
-            context.SaveChanges();
+            _context.Add(this);
+            _context.SaveChanges();
         }
 
         public void Delete()
         {
-            var containerToDelete = context.Containers.FirstOrDefault(container => container.Id == Id);
+            var containerToDelete = _context.Containers.FirstOrDefault(container => container.Id == Id);
 
             // We have to check for null incase it doesn't find anything.
             if (containerToDelete != null)
             {
                 // Remove the container
-                context.Remove(containerToDelete);
-                context.SaveChanges();
+                _context.Remove(containerToDelete);
+                _context.SaveChanges();
             }
         }
 
         public void Update()
         {
-            var containerToUpdate = context.Containers.FirstOrDefault(container => container.Id == Id);
+            var containerToUpdate = _context.Containers.FirstOrDefault(container => container.Id == Id);
 
             if (containerToUpdate != null)
             {
@@ -78,13 +81,15 @@ namespace StorageAppMvc.Domain
                 containerToUpdate.Items = Items;
 
                 // Update the values
-                context.Update(containerToUpdate);
-                context.SaveChanges();
+                _context.Update(containerToUpdate);
+                _context.SaveChanges();
             }
         }
 
         // Constructors
         // This constructor is for when you first create a container to be added to the database.
+        public Container() { }
+
         public Container(string name, string? description)
         {
             Name = name;

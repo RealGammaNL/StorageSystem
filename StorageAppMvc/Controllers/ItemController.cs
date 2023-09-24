@@ -3,30 +3,28 @@ using StorageAppMvc.Models;
 using System.Diagnostics;
 using StorageAppMvc.Domain;
 using StorageAppMvc.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace StorageAppMvc.Controllers
 {
     public class ItemController : Controller
     {
-        private readonly ILogger<ItemController> _logger;
+        private readonly StorageDb _context;
 
-        public ItemController(ILogger<ItemController> logger)
+        public ItemController(StorageDb context)
         {
-            _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            using (var context = new StorageDb())
-            {
-                var itemList = context.Items.ToList();
-                var containerList = context.Containers.ToList();
+            var itemList = _context.Items.ToList(); 
+            var containerList = _context.Containers.ToList();
 
-                ItemViewModel itemViewModel = new ItemViewModel();
-                itemViewModel.Items = itemList;
-                itemViewModel.Containers = containerList;
-                return View(itemViewModel);
-            }
+            ItemViewModel itemViewModel = new ItemViewModel();
+            itemViewModel.Items = itemList;
+            itemViewModel.Containers = containerList;
+            return View(itemViewModel);
         }
 
         public IActionResult Privacy()
@@ -38,21 +36,19 @@ namespace StorageAppMvc.Controllers
         public IActionResult CreateItem(string IName, string IDesc) 
         { 
             Item item = new Item(IName, IDesc);
-            item.Create();
+            _context.Add(item);
+            _context.SaveChanges();
 
             return RedirectToAction("Index");
         }
 
         public IActionResult AddItemToContainer(int ItemId, int ContainerId)
         {
-            using (var context = new StorageDb())
-            {
-                Item item = context.Items.First(i => i.Id == ItemId);
-                Container container = context.Containers.First(c => c.Id == ContainerId);
-                container.AddItem(item);
+            Item item = _context.Items.First(i => i.Id == ItemId);
+            Container container = _context.Containers.First(c => c.Id == ContainerId);
+            container.AddItem(item);
 
-                return RedirectToAction("Index");
-            }
+            return RedirectToAction("Index");
 
         }
 

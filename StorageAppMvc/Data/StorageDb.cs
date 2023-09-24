@@ -14,8 +14,9 @@ namespace StorageAppMvc.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connection = @"Data Source=.;Initial Catalog=StorageDb;Integrated Security=True;TrustServerCertificate=True;";
-            optionsBuilder.UseSqlServer(connection);
+            base.OnConfiguring(optionsBuilder);
+            //string connection = @"Data Source=.;Initial Catalog=StorageDb;Integrated Security=True;TrustServerCertificate=True;";
+            //optionsBuilder.UseSqlServer(connection);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,6 +25,12 @@ namespace StorageAppMvc.Data
             modelBuilder.Entity<Item>()
                 .Property(e => e.Name)
                 .HasMaxLength(30);
+        }
+
+        public StorageDb(DbContextOptions<StorageDb> contextOptions)
+            : base(contextOptions)
+        {
+
         }
     }
 }

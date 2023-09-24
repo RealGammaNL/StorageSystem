@@ -1,7 +1,25 @@
+using Microsoft.EntityFrameworkCore;
+using StorageAppMvc.Data;
+using Microsoft.Extensions.Configuration;
+using StorageAppMvc.Domain;
+using System.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
+
+//// Add services to the container.
+//builder.Services.AddControllersWithViews();
+//builder.Services.AddDbContext<StorageDb>();
+//DbContextOptions =>
+//builder.UseSqlServer(builder.Configuration.GetConnectionString("YourConnectionString")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add Entity Framework DbContext to the container.
+builder.Services.AddDbContext<StorageDb>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("YourConnectionString"));
+});
 
 var app = builder.Build();
 
@@ -23,5 +41,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Item}/{action=Index}/{id?}");
+
 
 app.Run();

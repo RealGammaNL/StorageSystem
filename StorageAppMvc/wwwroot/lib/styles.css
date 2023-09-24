@@ -20,6 +20,7 @@
     border-bottom: solid;
     padding: 5px;
     margin:4px;
+    height: 70px;
 }
 
 .Item-Name{
@@ -119,6 +120,34 @@
     width: 25%;
 }
 
+.Icons-Under > img {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+}
+
+.Icons-Under > img:hover {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    border:solid;
+    border-radius: 4px;
+    
+}
+
+.Container-Right > img {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+}
+
+.Container-Right > img:hover{
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    border: solid;
+    border-radius: 4px;
+}
 
 
 

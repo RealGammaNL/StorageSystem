@@ -16,6 +16,11 @@ namespace StorageAppMvc.Domain
         public string? Password { get; set; }
         public List<Room>? Rooms { get; set; }
 
+        private readonly StorageDb _context;
+        public User(StorageDb context)
+        {
+            _context = context;
+        }
 
         // User specific methods //
         public void Login(string username, string password)
@@ -28,29 +33,28 @@ namespace StorageAppMvc.Domain
         }
 
         // IEntity methods to CRUD a user //
-        private StorageDb context = new StorageDb();
         public void Create()
         {
-            context.Add(this);
-            context.SaveChanges();
+            _context.Add(this);
+            _context.SaveChanges();
         }
 
         public void Delete()
         {
-            var userToDelete = context.Users.FirstOrDefault(user => user.Id == Id);
+            var userToDelete = _context.Users.FirstOrDefault(user => user.Id == Id);
 
             // We have to check for null incase it doesn't find anything.
             if (userToDelete != null)
             {
                 // Remove the user
-                context.Remove(userToDelete);
-                context.SaveChanges();
+                _context.Remove(userToDelete);
+                _context.SaveChanges();
             }
         }
 
         public void Update()
         {
-            var userToUpdate = context.Users.FirstOrDefault(user => user.Id == Id);
+            var userToUpdate = _context.Users.FirstOrDefault(user => user.Id == Id);
 
             if (userToUpdate != null)
             {
@@ -60,13 +64,15 @@ namespace StorageAppMvc.Domain
                 userToUpdate.Password = Password;
 
                 // Update the values
-                context.Update(userToUpdate);
-                context.SaveChanges();
+                _context.Update(userToUpdate);
+                _context.SaveChanges();
             }
         }
 
         // Constructors
         // This constructor is for when you first create a user to be added to the database.
+
+        public User() { }
         public User(string name, string email, string password)
         {
             Name = name;

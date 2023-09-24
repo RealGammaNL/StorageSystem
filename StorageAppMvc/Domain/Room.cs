@@ -1,4 +1,5 @@
-﻿using StorageAppMvc.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using StorageAppMvc.Data;
 using System.ComponentModel.DataAnnotations;
 
 namespace StorageAppMvc.Domain
@@ -13,6 +14,11 @@ namespace StorageAppMvc.Domain
         public string Name { get; set; }
         public List<Container>? Containers { get; set; } = new List<Container>(); // You can ask for Room.Containers to get all of the items.
 
+        private readonly StorageDb _context;
+        public Room(StorageDb context)
+        {
+            _context = context;
+        }
 
         // Room specific methods //
         public void AddContainer(Container container)
@@ -26,29 +32,28 @@ namespace StorageAppMvc.Domain
 
 
         // IEntity methods to CRUD a room //
-        private StorageDb context = new StorageDb();
         public void Create()
         {
-            context.Add(this);
-            context.SaveChanges();
+            _context.Add(this);
+            _context.SaveChanges();
         }
 
         public void Delete()
         {
-            var roomToDelete = context.Rooms.FirstOrDefault(room => room.Id == Id);
+            var roomToDelete = _context.Rooms.FirstOrDefault(room => room.Id == Id);
 
             // We have to check for null incase it doesn't find anything.
             if (roomToDelete != null)
             {
                 // Remove the room
-                context.Remove(roomToDelete);
-                context.SaveChanges();
+                _context.Remove(roomToDelete);
+                _context.SaveChanges();
             }
         }
 
         public void Update()
         {
-            var roomToUpdate = context.Rooms.FirstOrDefault(room => room.Id == Id);
+            var roomToUpdate = _context.Rooms.FirstOrDefault(room => room.Id == Id);
 
             if (roomToUpdate != null)
             {
@@ -57,13 +62,15 @@ namespace StorageAppMvc.Domain
                 roomToUpdate.Containers = Containers;
 
                 // Update the values
-                context.Update(roomToUpdate);
-                context.SaveChanges();
+                _context.Update(roomToUpdate);
+                _context.SaveChanges();
             }
         }
 
         // Constructors
         // This constructor is for when you first create a room to be added to the database.
+        public Room() { }
+
         public Room(string name)
         {
             Name = name;

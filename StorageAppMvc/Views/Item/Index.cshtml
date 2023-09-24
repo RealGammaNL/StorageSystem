@@ -10,7 +10,8 @@
 <p>We will try to add buttons to create new items</p>
 
 <div class="Item-Information">
-    <form method="post" action="@Url.Action("CreateItem", "Item")" name="ItemPostForm">
+    @* <form method="post" action="@Url.Action("CreateItem", "Item")" name="ItemPostForm"> *@
+    <form asp-action="CreateItem">
         <div class="Item-Information-Fields">
             <div class="Item-Information-Fields-Item">
                 <label for="ItemName">Itemname:</label>
@@ -25,10 +26,20 @@
     </form>
 </div>
 
-<form style="display:none" method="post" action="@Url.Action("AddItemToContainer", "Item")">
+<form method="post" action="@Url.Action("AddItemToContainer", "Item")">
     <input type="number" id="ContainerId" name="ContainerId" /> <br /><br />
     <input type="number" id="ItemId" name="ItemId" /> <br /><br />
     <input type="submit" value="Submit" id="ItemAddToContainerSubmit"/>
+</form>
+
+<form style="display:none" asp-controller="Items" asp-action="Delete">
+    <input type="number" id="ItemId" name="ItemId" /> <br /><br />
+    <input type="submit" value="Delete" id="ItemDelete" />
+</form>
+
+<form style="display:none" action="@Url.Action("Delete", "Containers")">
+    <input type="number" id="ContainerId" name="ContainerId" /> <br /><br />
+    <input type="submit" value="Delete" id="ContainerDelete" />
 </form>
 
 <br><br>
@@ -40,10 +51,16 @@
         @foreach (Item i in Model.Items)
         {
             <div class="Item-Line" id="@i.Id" onclick="selectItem(this)">
-                <div class="Item-Name">@i.Name : @i.Description</div>
-                <div class="Item-Right">
-                    <div class="Item-Container">C :&#160</div>
-                    <div class="Item-Container-Number">@i.ContainerId</div>
+                <div class ="Items-Above">
+                    <div class="Item-Name" id="Item-Line-Item-Name">@i.Name : @i.Description</div>
+                    <div class="Item-Right">
+                        <div class="Item-Container">C :&#160</div>
+                        <div class="Item-Container-Number">@i.ContainerId</div>
+                    </div>
+                </div>
+                <div class="Icons-Under">
+                    <img src="images/pencil-icon.png" onclick="ItemEditClick" id="ItemEditImg">
+                    <img src="images/trashcan-icon.png" onclick="DeleteItemClick(this)" id="@i.Id">
                 </div>
             </div>
         }
@@ -54,14 +71,18 @@
         @foreach (Container c in Model.Containers)
         {
             <div class="Container-Line" id="@c.Id" onclick="selectContainer(this)">
+                <div class="Items-Above">
                     <div class="Container-Label">
                     <div class="Container-Name">C<span>@c.Id</span> : @c.Name</div>
                         <div class="Container-Right">
-                            <div class="Container-Room">R :&#160</div>
-                            <div class="Container-Room-Number">@c.RoomId</div>
+                            @* <div class="Container-Room">R :&#160</div> *@
+                            @* <div class="Container-Room-Number">@c.RoomId</div> *@
+                            <img src="images/pencil-icon.png" onclick="ContainerEditClick" id="ContainerEditImg">
+                            <img src="images/trashcan-icon.png" onclick="DeleteContainerClick(this)" id="@c.Id">
                         </div>
                     </div>
                     <div class="Container-Desc">@c.Description</div>
+                </div>
             </div>
         }
     </div>
@@ -112,6 +133,24 @@
             document.getElementById('ItemAddToContainerSubmit').click()
         }
     }
+
+    function DeleteItemClick(i) {
+        document.getElementById('ItemId').value = i.i d
+
+        if (document.getElementById('ItemId').value !== "" && document.getElementById('ContainerId').value == "") { 
+            document.getElementById('ItemDelete').click()
+        }
+    }
+
+    function DeleteContainerClick(c) {
+        document.getElementById('ContainerId').value = c.id
+
+        if (document.getElementById('ItemId').value == "" && document.getElementById('ContainerId').value !== "") {
+            document.getElementById('ContainerDelete').click()
+        }
+    }
+
+
 </script>
 
 
