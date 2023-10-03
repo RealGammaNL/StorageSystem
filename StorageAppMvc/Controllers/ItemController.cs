@@ -46,10 +46,13 @@ namespace StorageAppMvc.Controllers
         {
             Item item = _context.Items.First(i => i.Id == ItemId);
             Container container = _context.Containers.First(c => c.Id == ContainerId);
-            container.AddItem(item);
+
+            container.Items.Add(item);
+
+            _context.Update(container);
+            _context.SaveChanges();
 
             return RedirectToAction("Index");
-
         }
 
         [HttpPost]

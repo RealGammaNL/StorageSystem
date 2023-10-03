@@ -12,7 +12,7 @@ namespace StorageAppMvc.Domain
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
-        public List<Container>? Containers { get; set; } = new List<Container>(); // You can ask for Room.Containers to get all of the items.
+        public ICollection<Container>? Containers { get; set; } // You can ask for Room.Containers to get all of the items.
 
         private readonly StorageDb _context;
         public Room(StorageDb context)

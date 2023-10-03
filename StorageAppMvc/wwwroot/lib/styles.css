@@ -203,8 +203,44 @@
 }
 
 .Icon-Button {
+    color: white;
     border:none;
     background: none;
+}
+
+.Container-Boxes {
+    justify-content:center;
+    margin-top: 25px;
+    display:flex;
+}
+
+.Container-Button {
+    width: 125px;
+    height: 125px;
+    margin-right: 20px;
+    border-radius: 5px;
+}
+
+/*ASP Controller text fix*/
+*.table > thead > tr > th {
+    color: white;
+}
+
+*.table > tbody > tr > td {
+    color: white;
+}
+
+.Item-Header {
+    margin-top: 25px;
+}
+
+.Container-Items-Table {
+    margin-top: 25px;
+    justify-content:center;
+}
+
+.hidden {
+    display:none;
 }
 
 

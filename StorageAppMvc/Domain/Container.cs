@@ -14,15 +14,40 @@ namespace StorageAppMvc.Domain
         public string? Description { get; set; }
         public DateTime AddedOn { get; set; } = DateTime.Now;
         //public Image image { get; set; } ???
-        public int? RoomId { get; set; }
 
-        public List<Item>? Items { get; set; } = new List<Item>(); // You can ask for Container.Items to get all of the items.
+
+        public ICollection<Item>? Items { get; set; } = new List<Item>(); // You can ask for Container.Items to get all of the items.
+        public int? RoomId { get; set; }
+        public Room Room { get; set; }
+
 
         private readonly StorageDb _context;
         public Container(StorageDb context)
         {
             _context = context;
         }
+
+
+        // Constructors
+        // This constructor is for when you first create a container to be added to the database.
+        public Container() { }
+
+        public Container(string name, string? description)
+        {
+            Name = name;
+            Description = description;
+        }
+
+        // This overloaded constructor is for when you load existing containers from the database.
+        public Container(int id, string name, string? description, List<Item> items, DateTime dateTime)
+        {
+            Id = id;
+            Name = name;
+            Description = description;
+            AddedOn = dateTime;
+            Items = items;
+        }
+
         // Container specific methods //
         public void Move(Room currentRoom, Room targetRoom)
         {
@@ -84,26 +109,6 @@ namespace StorageAppMvc.Domain
                 _context.Update(containerToUpdate);
                 _context.SaveChanges();
             }
-        }
-
-        // Constructors
-        // This constructor is for when you first create a container to be added to the database.
-        public Container() { }
-
-        public Container(string name, string? description)
-        {
-            Name = name;
-            Description = description;
-        }
-
-        // This overloaded constructor is for when you load existing containers from the database.
-        public Container(int id, string name, string? description, List<Item> items, DateTime dateTime)
-        {
-            Id = id;
-            Name = name;
-            Description = description;
-            AddedOn = dateTime;
-            Items = items;
         }
     }
 }

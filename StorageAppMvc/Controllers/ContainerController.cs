@@ -3,7 +3,6 @@ using StorageAppMvc.Models;
 using System.Diagnostics;
 using StorageAppMvc.Domain;
 using StorageAppMvc.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace StorageAppMvc.Controllers
 {
