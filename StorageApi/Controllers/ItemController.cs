@@ -2,6 +2,7 @@
 using StorageAppMvc.Domain;
 using Microsoft.EntityFrameworkCore;
 using StorageAppMvc.Data;
+using Newtonsoft.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,9 +22,9 @@ namespace StorageApi.Controllers
 
         // GET: api/<ItemController>
         [HttpGet]
-        public IEnumerable<Item> Get()
+        public async Task<IEnumerable<Item>> Get()
         {
-            return _context.Items.ToList();
+            return await _context.Items.ToListAsync();
         }
 
         // GET api/<ItemController>/5
@@ -42,11 +43,33 @@ namespace StorageApi.Controllers
 
         // POST api/<ItemController>
         [HttpPost]
-        public void Post(string name, string desc)
+        public async Task<IActionResult> Post([FromBody] HttpContent content) //[FromBody] HttpContent content
         {
-            Item item = new Item(name, desc);
-            _context.Add(item);
-            _context.SaveChanges();
+
+            //Item item = new Item(name, desc);
+            //_context.Add(item);
+            //await _context.SaveChangesAsync();
+            //return Ok("Item created successfully");
+           
+            try
+            {
+                // Read the content as a string
+                string jsonContent = await content.ReadAsStringAsync();
+
+                // Deserialize the JSON content into your Item object
+                var item = JsonConvert.DeserializeObject<Item>(jsonContent);
+
+                // Add the item to the context and save changes
+                _context.Add(item);
+                await _context.SaveChangesAsync();
+
+                return Ok("Item created successfully");
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur during processing
+                return BadRequest($"Error: {ex.Message}");
+            }
         }
 
         // PUT api/<ItemController>/5

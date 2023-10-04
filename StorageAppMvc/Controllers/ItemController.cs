@@ -4,27 +4,77 @@ using System.Diagnostics;
 using StorageAppMvc.Domain;
 using StorageAppMvc.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Text;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace StorageAppMvc.Controllers
 {
     public class ItemController : Controller
     {
         private readonly StorageDb _context;
+        private readonly string ApiUrl = "https://localhost:7133";
 
         public ItemController(StorageDb context)
         {
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var itemList = _context.Items.ToList(); 
-            var containerList = _context.Containers.ToList();
+            //var itemList = _context.Items.ToList();
+
+            // Make an HTTP request to your API to get items and containers
+            var apiItems = await GetItemsFromApi();
+            var containerList = await GetContainersFromApi();
 
             ItemViewModel itemViewModel = new ItemViewModel();
-            itemViewModel.Items = itemList;
+            itemViewModel.Items = apiItems;
             itemViewModel.Containers = containerList;
+
             return View(itemViewModel);
+        }
+
+        private async Task<List<Item>> GetItemsFromApi()
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(ApiUrl);
+                var response = await client.GetAsync("api/Item");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var items = JsonConvert.DeserializeObject<List<Item>>(content);
+                    return items;
+                }
+                else
+                {
+                    return new List<Item>();
+                }
+            }
+        }
+
+        private async Task<List<Container>> GetContainersFromApi()
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(ApiUrl);
+                var response = await client.GetAsync("api/Container");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var containers = JsonConvert.DeserializeObject<List<Container>>(content);
+                    return containers;
+                }
+                else
+                {
+                    return new List<Container>();
+                }
+            }
         }
 
         public IActionResult Privacy()
@@ -33,13 +83,36 @@ namespace StorageAppMvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateItem(string Name, string Desc) 
+        public async Task<IActionResult> CreateItem(string Name, string Desc) 
         { 
             Item item = new Item(Name, Desc);
-            _context.Add(item);
-            _context.SaveChanges();
-
+            await CreateItemFromApi(item);
             return RedirectToAction("Index");
+
+        }
+
+        [HttpPost]
+        private async Task<IActionResult> CreateItemFromApi(Item item)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(ApiUrl);
+
+                var json = JsonConvert.SerializeObject(item);
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                // Send the POST request with the JSON content
+                var response = await client.PostAsync("api/Item", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return Ok(response);
+                }
+                else
+                {
+                    return BadRequest(response);
+                }
+            }
         }
 
         public IActionResult AddItemToContainer(int ItemId, int ContainerId)
