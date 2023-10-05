@@ -3,15 +3,44 @@
 }
 @model ItemViewModel;
 
+<form class="Hidden-Forms" action="@Url.Action("Index", "Navigation", new { id = @Model.tableSelectedContainer })">
+    <input type="submit" id="ReloadPage" />
+</form>
+
+<form method="post" class="Hidden-Forms" action="@Url.Action("Delete", "Navigation")">
+    <input type="number" name="id" id="tableDeleteId"/>
+    <input type="number" name="ContainerId" id="tableContainerId" />
+    <input type="submit" id="tableDeleteButton" />
+</form>
+
+<form method="post" class="Hidden-Forms" action="@Url.Action("AddItemToContainer", "Navigation")" > 
+    <input type="number" name="ItemId" id="tableItemId" />
+    <input type="number" name="ContainerId" id="tableContainerId"/>
+    <input type="submit" id="tableSubmitItemToContainer"/>
+
+</form>
+
 <div class="Container-Boxes">
     @foreach (var container in Model.Containers)
     {
         <form method="post" action="@Url.Action("Index", "Navigation")">
             <input type="hidden" id="@container.Id" name="id" value="@container.Id" />
-            <input type="submit" value="@container.Name" class="Container-Button" />
+            @if (container.Id == Model.tableSelectedContainer)
+            {
+                <input type="submit" id="Submit-@container.Id" value="@container.Name" class="Container-Button Navigation-Container-Selected hidden" />
+                <input type="button" id="Container-Button-@container.Id" value="@container.Name" class="Container-Button Navigation-Container-Selected" onclick="SelectOrSubmit(@container.Id)" />
+            }
+            else
+            {
+                <input type="submit" id="Submit-@container.Id" value="@container.Name" class="Container-Button hidden" />
+                <input type="button" id="Container-Button-@container.Id" value="@container.Name" class="Container-Button" onclick="SelectOrSubmit(@container.Id)" />
+            }
         </form>
     }
 </div>
+
+
+
 
 <div class="Container-Items-Table">
     <table class="table">
@@ -29,7 +58,7 @@
                 <th>
                     Added on
                 </th>
-                <th></th>
+                <th id="Table-Buttons"></th>
             </tr>
         </thead>
         <tbody>
@@ -37,36 +66,161 @@
             {
                 @foreach (var item in Model.SelectedContainerItems)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Description)
-                        </td>
-                        <td id="Details-@item.Id">
-                            @Html.DisplayFor(modelItem => item.Quantity)
-                        </td>
-                        <td id="Details-@item.Id">
-                            @Html.DisplayFor(modelItem => item.AddedOn)
-                        </td>
-                        <td>
-                            <a asp-action="Details" >Details</a>
+                    <form method="post" asp-controller="Navigation" asp-action="Edit" class="Hidden-Forms" id="itemToEdit-@item.Id">
+                        <tr class="tableItemRecord" id="tableItemRecord-@item.Id">
+                            <td>
+                                <label id="Label-Name-@item.Id" value="@item.Name">@item.Name</label>
+                                <input type="number" name="id" value="@item.Id" class="hidden"/>
+                                <input type="number" name="containerId" value="@item.ContainerId" class="hidden" />
+                                <input type="text" id="Input-Name-@item.Id" class="hidden" name="Name"/>
+                            </td>
+                            <td>
+                                <label id="Label-Desc-@item.Id" value="@item.Description">@item.Description</label>
+                                <input type="text" id="Input-Desc-@item.Id" class="hidden" name="Desc"/>
+                            </td>
+                        
+                            <td class="Show-Details-@item.Id hidden">
+                                <label id="Label-Quant-@item.Id" value="@item.Quantity">@item.Quantity</label>
+                            <input type="text" id="Input-Quant-@item.Id" class="hidden" name="Quant"/>
+                            </td>
+                            <td class="Show-Details-@item.Id hidden">
+                                <label>@item.AddedOn</label>
+                            </td>
+                            <td class="Hide-Details-@item.Id">
+                            </td>
+                            <td class="Hide-Details-@item.Id">
+                            </td>
+                            <td>
+                                <button type="button" class="Icon-Button" onclick="toggleDetails(@item.Id)"><i class="fa-solid fa-circle-info fa-xl"></i></button>
+                                <button type="button" class="Icon-Button" onclick="tableMoveItem(@item.Id)"><i class="fa-solid fa-up-down-left-right fa-xl"></i></button>
+                            <button type="button" class="Icon-Button" onclick="tableItemEdit(@item.Id, @item.ContainerId)" id="tableEditIcon-@item.Id"><i class="fa-regular fa-pen-to-square fa-xl"></i></button>
+                            <button type="button" class="Icon-Button" onclick="tableItemDelete(@item.Id)" id="tableDeleteIcon-@item.Id"><i class="fa-regular fa-trash-can fa-xl"></i></button>
 
-                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                        </td>
-                    </tr>
+                                <button type="submit" id="tableEditCheck-@item.Id" class="hidden Icon-Button"><i class="fa-solid fa-check fa-xl"></i></button>
+                                <button type="button" id="tableEditCancel-@item.Id" onclick="document.getElementById('ReloadPage').click()" class="hidden Icon-Button"><i class="fa-solid fa-xmark fa-xl"></i></button>
+
+                                <button type="button" id="tableDeleteCheck-@item.Id" onclick="tableDeleteConfirm(@item.Id, @item.ContainerId)" class="hidden Icon-Button"><i class="fa-solid fa-check fa-xl"></i></button>
+                                <button type="button" id="tableDeleteCancel-@item.Id" onclick="document.getElementById('ReloadPage').click()" class="hidden Icon-Button"><i class="fa-solid fa-xmark fa-xl"></i></button>
+                            </td>
+                        </tr>
+                    </form>
                 }
             }
         </tbody>
     </table>
 </div>
 
-@* <script>
-    function toggleDetails(i) {
-        document.getElementById('Details-').style.display = 'inline'
+
+<script>
+    let SelectedTableItem = null;
+
+    function toggleDetails(id) {
+        var showId = 'Show-Details-' + id
+        var hideId = 'Hide-Details-' + id
+
+        var showElements = document.getElementsByClassName(showId);
+        var hideElements = document.getElementsByClassName(hideId)
+
+        showElements[0].classList.toggle('hidden');
+        showElements[1].classList.toggle('hidden');
+
+        hideElements[0].classList.toggle('hidden');
+        hideElements[1].classList.toggle('hidden');
     }
 
-</script> *@
-@* onclick="toggleDetails(@item)" *@
+    function tableItemEdit(id) {
+
+        // Hide all labels
+        document.getElementById('Label-Name-' + id).classList.toggle('hidden');
+        document.getElementById('Label-Desc-' + id).classList.toggle('hidden');
+        document.getElementById('Label-Quant-' + id).classList.toggle('hidden');
+
+        // Show the inputs
+        document.getElementById('Input-Name-' + id).classList.toggle('hidden');
+        document.getElementById('Input-Desc-' + id).classList.toggle('hidden');
+        document.getElementById('Input-Quant-' + id).classList.toggle('hidden');
+
+        // Fill the inputs
+        document.getElementById('Input-Name-' + id).value = document.getElementById('Label-Name-' + id).textContent;
+        document.getElementById('Input-Desc-' + id).value = document.getElementById('Label-Desc-' + id).textContent;
+        document.getElementById('Input-Quant-' + id).value = document.getElementById('Label-Quant-' + id).textContent;
+
+        // Toggle edit and delete icons
+        document.getElementById('tableEditIcon-' + id).classList.toggle('hidden')
+        document.getElementById('tableDeleteIcon-' + id).classList.toggle('hidden')
+
+        // Toggle check and cancel icons
+        document.getElementById('tableEditCheck-' + id).classList.toggle('hidden')
+        document.getElementById('tableEditCancel-' + id).classList.toggle('hidden')
+
+    }
+
+    function tableItemDelete(id) {
+        // Toggle edit and delete icons
+        document.getElementById('tableEditIcon-' + id).classList.toggle('hidden')
+        document.getElementById('tableDeleteIcon-' + id).classList.toggle('hidden')
+
+        // Toggle check and cancel icons
+        document.getElementById('tableDeleteCheck-' + id).classList.toggle('hidden')
+        document.getElementById('tableDeleteCancel-' + id).classList.toggle('hidden')
+    }
+
+    function tableDeleteConfirm(id, containerId) {
+        document.getElementById('tableDeleteId').value = id
+        document.getElementById('tableContainerId').value = containerId
+        document.getElementById('tableDeleteButton').click()
+    }
+
+    function tableMoveItem(id) {
+        // If no item is selected, select that
+        if (SelectedTableItem === null) {
+            document.getElementById('tableItemRecord-' + id).classList.add('selectedTableItemRecord');
+            SelectedTableItem = id
+
+            // Hide real and show dummy containers
+            // document.getElementsByClassName('Container-Boxes')[0].classList.add('hidden')
+            // document.getElementsByClassName('Move-Container-Boxes')[0].classList.remove('hidden')
+
+            return;
+        }
+
+        // If you select the same item, unselect this
+        if (SelectedTableItem === id) {
+            var hideElements = document.getElementsByClassName('tableItemRecord')
+            for (var element of hideElements) {
+                element.classList.remove('selectedTableItemRecord')
+            }
+            SelectedTableItem = null;
+
+            // Hide dummy and show real containers
+            // document.getElementsByClassName('Container-Boxes')[0].classList.remove('hidden')
+            // document.getElementsByClassName('Move-Container-Boxes')[0].classList.add('hidden')
+
+            return;
+        }
+
+        // If you select a different item, select that and unselect this
+        if (SelectedTableItem !== null) {
+            var hideElements = document.getElementsByClassName('tableItemRecord')
+            for (var element of hideElements) 
+            {
+                element.classList.remove('selectedTableItemRecord')
+            }
+
+            document.getElementById('tableItemRecord-' + id).classList.add('selectedTableItemRecord')
+            SelectedTableItem = id;
+            return;
+        }
+    }
+
+    function SelectOrSubmit(id) {
+        if (SelectedTableItem === null) { 
+            document.getElementById('Submit-' + id).click();
+        }
+        else {
+            document.getElementById('tableItemId').value = SelectedTableItem
+            document.getElementById('tableContainerId').value = id
+            document.getElementById('tableSubmitItemToContainer').click()
+        }
+    }
+</script>

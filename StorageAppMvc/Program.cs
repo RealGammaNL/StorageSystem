@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StorageAppMvc.Data;
 using Microsoft.Extensions.Configuration;
-using StorageAppMvc.Domain;
+using Domain;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
