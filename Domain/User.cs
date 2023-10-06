@@ -1,7 +1,7 @@
-﻿using StorageAppMvc.Data;
+﻿//using StorageAppMvc.Data;
 using System.ComponentModel.DataAnnotations;
 
-namespace StorageAppMvc.Domain
+namespace Domain
 {
     public class User : IEntity
     {
@@ -16,11 +16,11 @@ namespace StorageAppMvc.Domain
         public string? Password { get; set; }
         public List<Room>? Rooms { get; set; }
 
-        private readonly StorageDb _context;
-        public User(StorageDb context)
-        {
-            _context = context;
-        }
+        //private readonly StorageDb _context;
+        //public User(StorageDb context)
+        //{
+        //    _context = context;
+        //}
 
         // User specific methods //
         public void Login(string username, string password)
@@ -35,38 +35,38 @@ namespace StorageAppMvc.Domain
         // IEntity methods to CRUD a user //
         public void Create()
         {
-            _context.Add(this);
-            _context.SaveChanges();
+            //_context.Add(this);
+            //_context.SaveChanges();
         }
 
         public void Delete()
         {
-            var userToDelete = _context.Users.FirstOrDefault(user => user.Id == Id);
+            //var userToDelete = _context.Users.FirstOrDefault(user => user.Id == Id);
 
-            // We have to check for null incase it doesn't find anything.
-            if (userToDelete != null)
-            {
-                // Remove the user
-                _context.Remove(userToDelete);
-                _context.SaveChanges();
-            }
+            //// We have to check for null incase it doesn't find anything.
+            //if (userToDelete != null)
+            //{
+            //    // Remove the user
+            //    _context.Remove(userToDelete);
+            //    _context.SaveChanges();
+            //}
         }
 
         public void Update()
         {
-            var userToUpdate = _context.Users.FirstOrDefault(user => user.Id == Id);
+            //var userToUpdate = _context.Users.FirstOrDefault(user => user.Id == Id);
 
-            if (userToUpdate != null)
-            {
-                // Change it's (changable) values
-                userToUpdate.Name = Name;
-                userToUpdate.Email = Email;
-                userToUpdate.Password = Password;
+            //if (userToUpdate != null)
+            //{
+            //    // Change it's (changable) values
+            //    userToUpdate.Name = Name;
+            //    userToUpdate.Email = Email;
+            //    userToUpdate.Password = Password;
 
-                // Update the values
-                _context.Update(userToUpdate);
-                _context.SaveChanges();
-            }
+            //    // Update the values
+            //    _context.Update(userToUpdate);
+            //    _context.SaveChanges();
+            //}
         }
 
         // Constructors

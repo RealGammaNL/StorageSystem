@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StorageAppMvc.Models;
 using System.Diagnostics;
-using StorageAppMvc.Domain;
+using Domain;
 using StorageAppMvc.Data;
 
 namespace StorageAppMvc.Controllers

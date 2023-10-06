@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StorageAppMvc.Models;
 using System.Diagnostics;
-using StorageAppMvc.Domain;
+using Domain;
 using StorageAppMvc.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http;
@@ -31,6 +31,16 @@ namespace StorageAppMvc.Controllers
             var containerList = await GetContainersFromApi();
 
             ItemViewModel itemViewModel = new ItemViewModel();
+
+            foreach (var apiItem in apiItems)
+            {
+                if (apiItem.ContainerId == null)
+                {
+                    itemViewModel.UnAssignedItems.Add(apiItem);
+                }
+            }
+
+
             itemViewModel.Items = apiItems;
             itemViewModel.Containers = containerList;
 
@@ -88,11 +98,10 @@ namespace StorageAppMvc.Controllers
             Item item = new Item(Name, Desc);
             await CreateItemFromApi(item);
             return RedirectToAction("Index");
-
         }
 
         [HttpPost]
-        private async Task<IActionResult> CreateItemFromApi(Item item)
+        public async Task<IActionResult> CreateItemFromApi(Item item)
         {
             using (var client = new HttpClient())
             {
@@ -140,15 +149,29 @@ namespace StorageAppMvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(string Name, string Desc, int id) {
-            Item item = _context.Items.First(i => i.Id == id);
-            item.Name = Name;
-            item.Description = Desc;
+        public async Task<IActionResult> Edit(string Name, string Desc, int id) {
+            Item item = new Item(Name, Desc);
+            item.Id = id;
 
-            _context.Update(item);
-            _context.SaveChanges();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(ApiUrl);
 
-            return RedirectToAction("Index");
+                var json = JsonConvert.SerializeObject(item);
+                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+                // Send the POST request with the JSON content
+                var response = await client.PutAsync($"api/Item/{item.Id}", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return BadRequest(response);
+                }
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
