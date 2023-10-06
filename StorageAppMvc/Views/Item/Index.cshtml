@@ -2,7 +2,7 @@
     ViewData["Title"] = "Index";
 }
 
-@using Domain
+@using StorageAppMvc.Domain
 @model ItemViewModel
 
 
@@ -99,9 +99,8 @@
             </div>
         </form>
 
-        @foreach (Item i in Model.UnAssignedItems)
+        @foreach (Item i in Model.Items)
         {
-           
             <div class="Item-Line" id="@i.Id" onclick="selectItem(this)">
                 <div class ="Items-Above">
                     <div class="Item-Left">

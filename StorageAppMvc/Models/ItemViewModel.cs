@@ -1,4 +1,4 @@
-﻿using Domain;
+﻿using StorageAppMvc.Domain;
 
 namespace StorageAppMvc.Models
 {
@@ -7,8 +7,6 @@ namespace StorageAppMvc.Models
         public List<Item>? Items { get; set; }
         public List<Container>? Containers { get; set; }
         public List<Item>? SelectedContainerItems { get; set; } = new List<Item>();
-        public List<Item>? UnAssignedItems { get; set; } = new List<Item>();
-        public int tableSelectedContainer { get; set; }
         public int SelectedContainer { get; set; }
         public int SelectedItem { get; set; }
     }

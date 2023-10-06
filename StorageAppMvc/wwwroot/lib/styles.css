@@ -48,7 +48,6 @@
     border-color: white;
     padding: 5px;
     margin: 4px;
-    height: 70px;
 }
 
 .Container-Line:hover {
@@ -220,38 +219,15 @@
     height: 125px;
     margin-right: 20px;
     border-radius: 5px;
-    background-color: #ffba42;
-    border-color: #eca922;
-    border-width: 3px;
 }
 
 /*ASP Controller text fix*/
 *.table > thead > tr > th {
     color: white;
-    padding: 25px;
-    background-color: #375a7f;
-    width:20%;
 }
-
 
 *.table > tbody > tr > td {
     color: white;
-    background-color: #3b536c;
-    padding: 20px;
-}
-
-*.table > tbody > tr > td > input{
-    color: white;
-    background-color: #3b536c;
-    border: solid;
-    border-width: 2px;
-    padding: 5px;
-}
-
-*.table > tbody > tr {
-    border-top: solid;
-    border-top-width: 20px;
-    border-color: #222222;
 }
 
 .Item-Header {
@@ -266,30 +242,6 @@
 .hidden {
     display:none;
 }
-
-#Table-Buttons {
-    width: 13%;
-}
-
-.Navigation-Container-Selected {
-    background-color: #e39816;
-}
-
-.selectedTableItemRecord > td {
-    color: white;
-    background-color: lightblue!important;
-    padding: 20px;
-}
-
-.Move-Container-Boxes {
-    justify-content: center;
-    margin-top: 25px;
-    display: flex;
-}
-
-
-
-
 
 
 

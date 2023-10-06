@@ -1,8 +1,8 @@
-﻿//using Microsoft.EntityFrameworkCore;
-//using StorageAppMvc.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using StorageAppMvc.Data;
 using System.ComponentModel.DataAnnotations;
 
-namespace Domain
+namespace StorageAppMvc.Domain
 {
     public class Room : IEntity
     {
@@ -14,11 +14,11 @@ namespace Domain
         public string Name { get; set; }
         public ICollection<Container>? Containers { get; set; } // You can ask for Room.Containers to get all of the items.
 
-        //private readonly StorageDb _context;
-        //public Room(StorageDb context)
-        //{
-        //    _context = context;
-        //}
+        private readonly StorageDb _context;
+        public Room(StorageDb context)
+        {
+            _context = context;
+        }
 
         // Room specific methods //
         public void AddContainer(Container container)
@@ -34,37 +34,37 @@ namespace Domain
         // IEntity methods to CRUD a room //
         public void Create()
         {
-            //_context.Add(this);
-            //_context.SaveChanges();
+            _context.Add(this);
+            _context.SaveChanges();
         }
 
         public void Delete()
         {
-            //var roomToDelete = _context.Rooms.FirstOrDefault(room => room.Id == Id);
+            var roomToDelete = _context.Rooms.FirstOrDefault(room => room.Id == Id);
 
-            //// We have to check for null incase it doesn't find anything.
-            //if (roomToDelete != null)
-            //{
-            //    // Remove the room
-            //    _context.Remove(roomToDelete);
-            //    _context.SaveChanges();
-            //}
+            // We have to check for null incase it doesn't find anything.
+            if (roomToDelete != null)
+            {
+                // Remove the room
+                _context.Remove(roomToDelete);
+                _context.SaveChanges();
+            }
         }
 
         public void Update()
         {
-            //var roomToUpdate = _context.Rooms.FirstOrDefault(room => room.Id == Id);
+            var roomToUpdate = _context.Rooms.FirstOrDefault(room => room.Id == Id);
 
-            //if (roomToUpdate != null)
-            //{
-            //    // Change it's (changable) values
-            //    roomToUpdate.Name = Name;
-            //    roomToUpdate.Containers = Containers;
+            if (roomToUpdate != null)
+            {
+                // Change it's (changable) values
+                roomToUpdate.Name = Name;
+                roomToUpdate.Containers = Containers;
 
-            //    // Update the values
-            //    _context.Update(roomToUpdate);
-            //    _context.SaveChanges();
-            //}
+                // Update the values
+                _context.Update(roomToUpdate);
+                _context.SaveChanges();
+            }
         }
 
         // Constructors

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Domain;
+using StorageAppMvc.Domain;
 
 
 namespace StorageAppMvc.Data

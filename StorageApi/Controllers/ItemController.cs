@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Domain;
+using StorageAppMvc.Domain;
 using Microsoft.EntityFrameworkCore;
 using StorageAppMvc.Data;
 using Newtonsoft.Json;
@@ -43,14 +43,21 @@ namespace StorageApi.Controllers
 
         // POST api/<ItemController>
         [HttpPost]
-        public async Task<IActionResult> Post(Item item)
+        public async Task<IActionResult> Post([FromBody] HttpContent content) //[FromBody] HttpContent content
         {
+
+            //Item item = new Item(name, desc);
+            //_context.Add(item);
+            //await _context.SaveChangesAsync();
+            //return Ok("Item created successfully");
+           
             try
             {
-                if (item == null)
-                {
-                    return BadRequest("Invalid item data");
-                }
+                // Read the content as a string
+                string jsonContent = await content.ReadAsStringAsync();
+
+                // Deserialize the JSON content into your Item object
+                var item = JsonConvert.DeserializeObject<Item>(jsonContent);
 
                 // Add the item to the context and save changes
                 _context.Add(item);
@@ -67,32 +74,18 @@ namespace StorageApi.Controllers
 
         // PUT api/<ItemController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Item item)
+        public void Put(int id, string name, string desc)
         {
-            try
+            Item itemToUpdate = _context.Items.FirstOrDefault(item => item.Id == id);
+
+            if (itemToUpdate != null)
             {
-                if (item == null)
-                {
-                    return BadRequest("Invalid item data");
-                }
+                itemToUpdate.Name = name;
+                itemToUpdate.Description = desc;
 
-                // Update the item
-                Item itemToEdit = _context.Items.First(itemToEdit => itemToEdit.Id == item.Id);
-                itemToEdit.Name = item.Name;
-                itemToEdit.Description = item.Description;
-                itemToEdit.Quantity = item.Quantity;
-
-                _context.Update(itemToEdit);
-                await _context.SaveChangesAsync();
-
-                return Ok("Item created successfully");
+                _context.Update(itemToUpdate);
+                _context.SaveChanges();
             }
-            catch (Exception ex)
-            {
-                // Handle any exceptions that occur during processing
-                return BadRequest($"Error: {ex.Message}");
-            }
-
         }
 
         // DELETE api/<ItemController>/5
