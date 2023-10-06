@@ -9,13 +9,13 @@
 
 <form method="post" class="Hidden-Forms" action="@Url.Action("Delete", "Navigation")">
     <input type="number" name="id" id="tableDeleteId"/>
-    <input type="number" name="ContainerId" id="tableContainerId" />
+    <input type="number" name="ContainerId" id="tableDeleteContainerId" />
     <input type="submit" id="tableDeleteButton" />
 </form>
 
 <form method="post" class="Hidden-Forms" action="@Url.Action("AddItemToContainer", "Navigation")" > 
     <input type="number" name="ItemId" id="tableItemId" />
-    <input type="number" name="ContainerId" id="tableContainerId"/>
+    <input type="number" name="ContainerId" id="tableAddContainerId"/>
     <input type="submit" id="tableSubmitItemToContainer"/>
 
 </form>
@@ -167,7 +167,7 @@
 
     function tableDeleteConfirm(id, containerId) {
         document.getElementById('tableDeleteId').value = id
-        document.getElementById('tableContainerId').value = containerId
+        document.getElementById('tableDeleteContainerId').value = containerId
         document.getElementById('tableDeleteButton').click()
     }
 
@@ -219,7 +219,7 @@
         }
         else {
             document.getElementById('tableItemId').value = SelectedTableItem
-            document.getElementById('tableContainerId').value = id
+            document.getElementById('tableAddContainerId').value = id
             document.getElementById('tableSubmitItemToContainer').click()
         }
     }
