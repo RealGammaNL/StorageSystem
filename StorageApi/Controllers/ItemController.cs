@@ -21,6 +21,10 @@ namespace StorageApi.Controllers
 
 
         // GET: api/<ItemController>
+        /// <summary>
+        /// Return all items
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IEnumerable<Item>> Get()
         {
@@ -28,6 +32,11 @@ namespace StorageApi.Controllers
         }
 
         // GET api/<ItemController>/5
+        /// <summary>
+        /// Return the item based on the id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StorageAppMvc.Data;
 using Domain;
+using StorageAppMvc.Controllers;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -50,14 +51,24 @@ namespace StorageApi.Controllers
 
         // PUT api/<ContainerController>/5
         [HttpPut("{id}")]
-        public void Put(int id, string name, string desc)
+        public void Put(int id, string? name, string? desc, int? roomid)
         {
             Container ContainerToUpdate = _context.Containers.FirstOrDefault(Container => Container.Id == id);
 
             if (ContainerToUpdate != null)
             {
-                ContainerToUpdate.Name = name;
-                ContainerToUpdate.Description = desc;
+                if (name != null)
+                {
+                    ContainerToUpdate.Name = name;
+                }
+                if (desc != null)
+                {
+                    ContainerToUpdate.Description = desc;
+                }
+                if (roomid != 0)
+                {
+                    ContainerToUpdate.RoomId = roomid;
+                }
 
                 _context.Update(ContainerToUpdate);
                 _context.SaveChanges();
@@ -79,5 +90,7 @@ namespace StorageApi.Controllers
 
             return NotFound("That id isn't found, try again");
         }
+
+
     }
 }

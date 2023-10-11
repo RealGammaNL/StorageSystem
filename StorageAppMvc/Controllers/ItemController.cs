@@ -22,13 +22,13 @@ namespace StorageAppMvc.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int id)
         {
             //var itemList = _context.Items.ToList();
 
             // Make an HTTP request to your API to get items and containers
             var apiItems = await GetItemsFromApi();
-            var containerList = await GetContainersFromApi();
+            var containerList = await GetContainersFromApi(id);
 
             ItemViewModel itemViewModel = new ItemViewModel();
 
@@ -43,6 +43,7 @@ namespace StorageAppMvc.Controllers
 
             itemViewModel.Items = apiItems;
             itemViewModel.Containers = containerList;
+            itemViewModel.RoomId = id;
 
             return View(itemViewModel);
         }
@@ -67,18 +68,18 @@ namespace StorageAppMvc.Controllers
             }
         }
 
-        private async Task<List<Container>> GetContainersFromApi()
+        private async Task<ICollection<Container>> GetContainersFromApi(int id)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(ApiUrl);
-                var response = await client.GetAsync("api/Container");
+                var response = await client.GetAsync($"api/Room/{id}");
 
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    var containers = JsonConvert.DeserializeObject<List<Container>>(content);
-                    return containers;
+                    var room = JsonConvert.DeserializeObject<Room>(content);
+                    return room.Containers;
                 }
                 else
                 {
@@ -174,10 +175,17 @@ namespace StorageAppMvc.Controllers
             }
         }
 
+        public async Task<IActionResult> SelectRoom(int id)
+        {
+            return RedirectToAction("Index");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
     }
 }

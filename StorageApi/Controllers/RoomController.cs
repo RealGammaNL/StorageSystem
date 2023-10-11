@@ -33,11 +33,44 @@ namespace StorageApi.Controllers
 
             if (Room != null)
             {
+                var containers = _context.Containers.Where(c => c.RoomId == id).ToList();
+
+                if (containers.Any())
+                {
+                    Room.Containers = containers;
+                }
+                else
+                {
+                    Room.Containers = new List<Container>();
+                }
+
                 return Ok(Room);
             }
 
-            return NotFound("That id isn't found, try again");
+            else
+            {
+                return NotFound("That id isn't found, try again");
+            }
         }
+
+        ///// <summary>
+        ///// Returns all rooms according to the roomnumber
+        ///// </summary>
+        ///// <param name="id">RoomId</param>
+        ///// <returns>List of containers</returns>
+        //[HttpGet("{id}")]
+        ////[Route("api/Container/GetRoomContainers")]
+        //public IActionResult GetRoomContainers(int id)
+        //{
+        //    var containers = _context.Containers.Where(c => c.RoomId == id).ToList();
+
+        //    if (containers.Any())
+        //    {
+        //        return Ok(containers);
+        //    }
+
+        //    return BadRequest($"No containers where found for RoomID: {id}");
+        //}
 
         // POST api/<RoomController>
         [HttpPost]
