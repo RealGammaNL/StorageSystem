@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using StorageAppMvc.Data;
+using Domain.Data;
 using Microsoft.Extensions.Configuration;
 using Domain;
 using System.Configuration;

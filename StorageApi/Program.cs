@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using StorageAppMvc.Data;
+using Domain.Data;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

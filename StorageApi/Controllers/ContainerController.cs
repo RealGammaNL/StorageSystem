@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using StorageAppMvc.Data;
-using Domain;
-using StorageAppMvc.Controllers;
+﻿using Domain;
+using Domain.Data;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

@@ -1,4 +1,4 @@
-﻿//using StorageAppMvc.Data;
+﻿//using Domain.Data;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain

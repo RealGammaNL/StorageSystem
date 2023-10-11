@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using StorageAppMvc.Data;
+using Domain.Data;
 using StorageAppMvc.Models;
 using Domain;
 using Newtonsoft.Json;

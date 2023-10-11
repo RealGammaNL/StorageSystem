@@ -2,7 +2,7 @@
 using Domain;
 
 
-namespace StorageAppMvc.Data
+namespace Domain.Data
 {
     public class StorageDb : DbContext
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 //using Microsoft.EntityFrameworkCore;
-//using StorageAppMvc.Data;
+//using Domain.Data;
 
 namespace Domain
 {

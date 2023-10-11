@@ -2,7 +2,7 @@
 using StorageAppMvc.Models;
 using System.Diagnostics;
 using Domain;
-using StorageAppMvc.Data;
+using Domain.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http;
 using System.Threading.Tasks;
