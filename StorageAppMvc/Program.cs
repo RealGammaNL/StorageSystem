@@ -3,6 +3,8 @@ using StorageAppMvc.Data;
 using Microsoft.Extensions.Configuration;
 using Domain;
 using System.Configuration;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,16 @@ var builder = WebApplication.CreateBuilder(args);
 //DbContextOptions =>
 //builder.UseSqlServer(builder.Configuration.GetConnectionString("YourConnectionString")));
 
+builder.Services.AddAuthentication(options => { options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme; })
+    .AddCookie(options => { options.LoginPath = "/account/google-login"; })
+    .AddGoogle(options =>
+
+    {
+        options.ClientId = builder.Configuration["GoogleLogin:ClientId"];
+        options.ClientSecret = builder.Configuration["GoogleLogin:ClientSecret"];
+        options.CallbackPath = "/account/google-response";
+    });
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -20,6 +32,8 @@ builder.Services.AddDbContext<StorageDb>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("YourConnectionString"));
 });
+
+
 
 var app = builder.Build();
 
@@ -31,11 +45,12 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

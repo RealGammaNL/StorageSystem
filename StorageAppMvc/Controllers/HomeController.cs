@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StorageAppMvc.Models;
 using System.Diagnostics;
 
 namespace StorageAppMvc.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -12,6 +14,7 @@ namespace StorageAppMvc.Controllers
         {
             _logger = logger;
         }
+
 
         public IActionResult Index()
         {

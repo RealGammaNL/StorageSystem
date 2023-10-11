@@ -18,7 +18,9 @@ namespace Domain
         public int Quantity { get; set; } = 1;
 
         public int? ContainerId { get; set; }
-        public Container? Container { get; set; }
+
+        //Doesn't work because of cycle references in the API
+        //public Container? Container { get; set; }
 
 
         //private readonly StorageDb? _context;

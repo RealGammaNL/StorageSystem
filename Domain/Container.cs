@@ -17,7 +17,9 @@ namespace Domain
 
         public ICollection<Item>? Items { get; set; } = new List<Item>(); // You can ask for Container.Items to get all of the items.
         public int? RoomId { get; set; }
-        public Room Room { get; set; }
+
+        //Doesnt work because of cycle references in API controller
+        //public Room Room { get; set; }
 
         //private readonly StorageDb? _context;
 

@@ -26,13 +26,14 @@ namespace StorageAppMvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateContainer(string Name, string Desc)
+        public IActionResult CreateContainer(string Name, string Desc, int RoomId)
         {
             Container container = new Container(Name, Desc);
+            container.RoomId = RoomId;
             _context.Add(container);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Item");
+            return RedirectToAction("Index", "Item", new { id = RoomId});
         }
 
         [HttpPost]

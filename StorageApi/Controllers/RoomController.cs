@@ -27,7 +27,7 @@ namespace StorageApi.Controllers
 
         // GET api/<RoomController>/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public Room Get(int id)
         {
             Room Room = _context.Rooms.FirstOrDefault(Room => Room.Id == id);
 
@@ -44,12 +44,12 @@ namespace StorageApi.Controllers
                     Room.Containers = new List<Container>();
                 }
 
-                return Ok(Room);
+                return Room;
             }
 
             else
             {
-                return NotFound("That id isn't found, try again");
+                return Room;
             }
         }
 

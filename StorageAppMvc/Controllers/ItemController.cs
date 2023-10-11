@@ -79,13 +79,13 @@ namespace StorageAppMvc.Controllers
                 {
                     var content = await response.Content.ReadAsStringAsync();
                     var room = JsonConvert.DeserializeObject<Room>(content);
-                    return room.Containers;
-                }
-                else
-                {
-                    return new List<Container>();
+                    if (room.Containers.Any())
+                    {
+                        return room.Containers;
+                    }
                 }
             }
+            return new List<Container>();
         }
 
         public IActionResult Privacy()
