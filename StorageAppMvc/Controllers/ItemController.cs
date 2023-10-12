@@ -1,14 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Domain;
+using Domain.Data;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using StorageAppMvc.Models;
 using System.Diagnostics;
-using Domain;
-using Domain.Data;
-using Microsoft.EntityFrameworkCore;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System.Text;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace StorageAppMvc.Controllers
 {
@@ -16,6 +11,7 @@ namespace StorageAppMvc.Controllers
     {
         private readonly StorageDb _context;
         private readonly string ApiUrl = "https://localhost:7133";
+        public NavbarViewModel NavbarViewModel { get; set; }
 
         public ItemController(StorageDb context)
         {
@@ -45,6 +41,21 @@ namespace StorageAppMvc.Controllers
             itemViewModel.Containers = containerList;
             itemViewModel.RoomId = id;
 
+
+            this.NavbarViewModel = new NavbarViewModel();//has property PageTitle
+            NavbarViewModel.Rooms = _context.Rooms.ToList();
+
+            foreach(Room room in NavbarViewModel.Rooms)
+            {
+                if (room.Id == id)
+                {
+                    NavbarViewModel.selectedRoom = room;
+                    break;
+                }
+            }
+
+            this.ViewData["NavbarViewModel"] = this.NavbarViewModel;
+
             return View(itemViewModel);
         }
 
@@ -68,7 +79,7 @@ namespace StorageAppMvc.Controllers
             }
         }
 
-        private async Task<ICollection<Container>> GetContainersFromApi(int id)
+        private async Task<List<Container>> GetContainersFromApi(int id)
         {
             using (var client = new HttpClient())
             {
@@ -94,11 +105,11 @@ namespace StorageAppMvc.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateItem(string Name, string Desc) 
+        public async Task<IActionResult> CreateItem(string Name, string Desc, int RoomId) 
         { 
             Item item = new Item(Name, Desc);
             await CreateItemFromApi(item);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { id = RoomId });
         }
 
         [HttpPost]
@@ -125,7 +136,7 @@ namespace StorageAppMvc.Controllers
             }
         }
 
-        public IActionResult AddItemToContainer(int ItemId, int ContainerId)
+        public IActionResult AddItemToContainer(int ItemId, int ContainerId, int RoomId)
         {
             Item item = _context.Items.First(i => i.Id == ItemId);
             Container container = _context.Containers.First(c => c.Id == ContainerId);
@@ -135,7 +146,7 @@ namespace StorageAppMvc.Controllers
             _context.Update(container);
             _context.SaveChanges();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { id = RoomId });
         }
 
         [HttpPost]

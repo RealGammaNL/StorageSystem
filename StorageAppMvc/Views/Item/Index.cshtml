@@ -16,7 +16,7 @@
 
 <form method="post" class="Hidden-Forms" action="@Url.Action("AddItemToContainer", "Item")">
     @*AddItemToContainer is the method in the Item controller*@
-
+    <input type="hidden" name="RoomId" value="@Model.RoomId" />
     <input type="number" id="ContainerId" name="ContainerId" />
     <input type="number" id="ItemId" name="ItemId" />@*ItemId is the parameter in the AddItemToContainer method in ItemController*@
     <input type="submit" id="ItemAddToContainerSubmit" /> @*submit is the input type, it makes sure this form gets posted to the ItemController*@
@@ -92,6 +92,7 @@
                 <div class="Icons-Under">
                     <div class="Item-Edit-Confirm" id="itemEditConfirm-1" style="display: inline;">
                         <i style="font-weight: bold;">Add? :&nbsp;</i>
+                        <input type="hidden" name="RoomId" value="@Model.RoomId" />
                         <button type="submit" class="Icon-Button"><i class="fa-solid fa-check fa-lg" id="itemEditCheck-1"></i></button>
                         <button type="reset" class="Icon-Button"><i class="fa-solid fa-xmark fa-lg" id="itemEditCancel-1" onclick="document.getElementById('NewItem').style.display = 'none'"></i></button>
                     </div>
@@ -115,8 +116,8 @@
                     </div>
                 </div>
                 <div class="Icons-Under">
-                    <img src="images/pencil-icon.png" onclick="EditClick('item', @i.Id)" id="ItemEditImg-@i.Id">
-                    <img src="images/trashcan-icon.png" onclick="DeleteClick('item', @i.Id)" id="ItemDeleteImg-@i.Id">
+                    <img src="~/images/pencil-icon.png" onclick="EditClick('item', @i.Id)" id="ItemEditImg-@i.Id">
+                    <img src="~/images/trashcan-icon.png" onclick="DeleteClick('item', @i.Id)" id="ItemDeleteImg-@i.Id">
 
                     <div class="Item-Edit-Confirm" id="itemEditConfirm-@i.Id">
                         <i style="font-weight: bold;">Confirm edit? :&#160</i>
@@ -171,8 +172,8 @@
                         <div class="Container-Right">
                             @* <div class="Container-Room">R :&#160</div> *@
                             @* <div class="Container-Room-Number">@c.RoomId</div> *@
-                            <img src="images/pencil-icon.png" onclick="EditClick('container', @c.Id)" id="ContainerEditImg-@c.Id">
-                            <img src="images/trashcan-icon.png" onclick="DeleteClick('container', @c.Id)" id="ContainerDeleteImg-@c.Id">
+                            <img src="~/images/pencil-icon.png" onclick="EditClick('container', @c.Id)" id="ContainerEditImg-@c.Id">
+                            <img src="~/images/trashcan-icon.png" onclick="DeleteClick('container', @c.Id)" id="ContainerDeleteImg-@c.Id">
 
                             <div class="Container-Edit-Confirm" id="containerEditConfirm-@c.Id">
                                 <i style="font-weight: bold;">Confirm edit? :&#160</i>

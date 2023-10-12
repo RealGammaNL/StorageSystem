@@ -20,7 +20,7 @@ namespace StorageApi.Controllers
 
         // GET: api/<RoomController>
         [HttpGet]
-        public IEnumerable<Room> Get()
+        public List<Room> Get()
         {
             return _context.Rooms.ToList();
         }

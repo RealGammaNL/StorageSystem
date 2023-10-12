@@ -21,21 +21,24 @@
 </form>
 
 <div class="Container-Boxes">
-    @foreach (var container in Model.Containers)
+    @if (Model.Containers.Any())
     {
-        <form method="post" action="@Url.Action("Index", "Navigation")">
-            <input type="hidden" id="@container.Id" name="id" value="@container.Id" />
-            @if (container.Id == Model.tableSelectedContainer)
-            {
-                <input type="submit" id="Submit-@container.Id" value="@container.Name" class="Container-Button Navigation-Container-Selected hidden" />
-                <input type="button" id="Container-Button-@container.Id" value="@container.Name" class="Container-Button Navigation-Container-Selected" onclick="SelectOrSubmit(@container.Id)" />
-            }
-            else
-            {
-                <input type="submit" id="Submit-@container.Id" value="@container.Name" class="Container-Button hidden" />
-                <input type="button" id="Container-Button-@container.Id" value="@container.Name" class="Container-Button" onclick="SelectOrSubmit(@container.Id)" />
-            }
-        </form>
+        @foreach (var container in Model.Containers)
+        {
+            <form method="post" action="@Url.Action("Index", "Navigation")">
+                <input type="hidden" id="@container.Id" name="id" value="@container.Id" />
+                @if (container.Id == Model.tableSelectedContainer)
+                {
+                    <input type="submit" id="Submit-@container.Id" value="@container.Name" class="Container-Button Navigation-Container-Selected hidden" />
+                    <input type="button" id="Container-Button-@container.Id" value="@container.Name" class="Container-Button Navigation-Container-Selected" onclick="SelectOrSubmit(@container.Id)" />
+                }
+                else
+                {
+                    <input type="submit" id="Submit-@container.Id" value="@container.Name" class="Container-Button hidden" />
+                    <input type="button" id="Container-Button-@container.Id" value="@container.Name" class="Container-Button" onclick="SelectOrSubmit(@container.Id)" />
+                }
+            </form>
+        }
     }
 </div>
 

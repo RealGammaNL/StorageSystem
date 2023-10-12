@@ -1,9 +1,16 @@
-﻿<!DOCTYPE html>
+﻿@using Domain;
+@* @model NavbarViewModel *@
+@{
+    var Model = (NavbarViewModel)ViewBag.NavbarViewModel;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - StorageAppMvc</title>
+
     @* <link rel="stylesheet" href="~/StorageAppMvc.styles.css" asp-append-version="true" /> *@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -21,12 +28,25 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Item" asp-action="Index">New Components</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Navigation" asp-action="Index">Storage</a>
-                        </li>
+                        @if (Model.selectedRoom != null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" action="@Url.Action("Index", "Item", new { id = Model.selectedRoom.Id })">New Components</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" action="@Url.Action("Navigation", "Item", new { RoomId = Model.selectedRoom.Id })">Storage</a>
+                            </li>
+
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Item" asp-action="Index">New Components</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Navigation" asp-action="Index">Storage</a>
+                            </li>
+                        }
                         @* <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Asp-Controllers</a>
                             <div class="dropdown-menu">
@@ -42,10 +62,19 @@
                         <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
                     </form>
                     <li class="nav-room-item nav-item dropdown d-flex">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Current Room</a>
+                        @if (Model.selectedRoom == null)
+                        {
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Current Room</a>
+                        }
+                        @if (Model.selectedRoom != null)
+                        {
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">@Model.selectedRoom.Name</a>
+                        }
                         <div class="dropdown-menu">
-                            <a class="dropdown-item nav-link" asp-area="" asp-controller="Item" asp-action="Index" asp-route-id="1">Slaapkamer</a>
-                            <a class="dropdown-item nav-link" asp-area="" asp-controller="Item" asp-action="Index" asp-route-id="2">Garage</a>
+                            @foreach (Room room in Model.Rooms)
+                            {
+                                <a class="dropdown-item nav-link" id="dropdown-item-@room.Id" value="@room.Id" asp-area="" asp-controller="Item" asp-action="Index" asp-route-id="@room.Id">@room.Name</a>
+                            }
                         </div>
                     </li>
                  

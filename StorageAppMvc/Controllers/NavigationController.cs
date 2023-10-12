@@ -12,29 +12,76 @@ namespace StorageAppMvc.Controllers
     {
         private readonly StorageDb _context;
         private readonly string ApiUrl = "https://localhost:7133";
+        public NavbarViewModel NavbarViewModel { get; set; }
         public NavigationController(StorageDb context)
         {
             _context = context;
         }
 
         // GET: NavigationController
-        public ActionResult Index(int? id)
+        public async Task<ActionResult> Index(int? id, int? RoomId)
         {
             ItemViewModel itemViewModel = new ItemViewModel();
-            var itemList = _context.Items.ToList();
-            var containerList = _context.Containers.ToList();
-            itemViewModel.Items = itemList;
-            itemViewModel.Containers = containerList;
 
-            if (id != null)
+            if (RoomId != null) 
             {
-                Container containerClicked = _context.Containers.FirstOrDefault(c => c.Id == id);
-                List<Item> items = _context.Items.Where(i => i.ContainerId == id).ToList(); // Search for all items that have the same ContainerId as the container, put them in a list
-                itemViewModel.SelectedContainerItems = items;
-                itemViewModel.tableSelectedContainer = containerClicked.Id;
+                var itemList = _context.Items.ToList();
+                List<Container> containerList = await GetContainersFromApi(RoomId);
+
+                itemViewModel.Items = itemList;
+                itemViewModel.Containers = containerList;
+
+                if (id != null)
+                {
+                    foreach (Container container in containerList)
+                    {
+                        if (container.Id == id)
+                        {
+                            Container containerClicked = container;
+                            List<Item> items = _context.Items.Where(i => i.ContainerId == id).ToList(); // Search for all items that have the same ContainerId as the container, put them in a list
+                            itemViewModel.SelectedContainerItems = items;
+                            itemViewModel.tableSelectedContainer = containerClicked.Id;
+                        }
+                    }
+                }
             }
 
+
+
+            this.NavbarViewModel = new NavbarViewModel();//has property PageTitle
+            NavbarViewModel.Rooms = _context.Rooms.ToList();
+
+            foreach (Room room in NavbarViewModel.Rooms)
+            {
+                if (room.Id == RoomId)
+                {
+                    NavbarViewModel.selectedRoom = room;
+                    break;
+                }
+            }
+
+            this.ViewData["NavbarViewModel"] = this.NavbarViewModel;
             return View(itemViewModel);
+        }
+
+        private async Task<List<Container>> GetContainersFromApi(int? id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(ApiUrl);
+                var response = await client.GetAsync($"api/Room/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var room = JsonConvert.DeserializeObject<Room>(content);
+                    if (room.Containers.Any())
+                    {
+                        return room.Containers;
+                    }
+                }
+            }
+            return new List<Container>();
         }
 
         [HttpPost]

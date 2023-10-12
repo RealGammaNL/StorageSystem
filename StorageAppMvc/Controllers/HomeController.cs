@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Domain.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StorageAppMvc.Models;
 using System.Diagnostics;
@@ -8,16 +9,33 @@ namespace StorageAppMvc.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger<HomeController> _logger;
+        public NavbarViewModel NavbarViewModel { get; set; }
+        private readonly StorageDb _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(StorageDb context)
         {
-            _logger = logger;
+            _context = context;
         }
+
+        //public HomeController()
+        //{
+        //    this.NavbarViewModel = new NavbarViewModel();//has property PageTitle
+        //    NavbarViewModel.Rooms = _context.Rooms.ToList();
+
+        //    this.ViewData["NavbarViewModel"] = this.NavbarViewModel;
+        //}
+        //public HomeController(ILogger<HomeController> logger)
+        //{
+        //    _logger = logger;
+        //}
 
 
         public IActionResult Index()
         {
+            this.NavbarViewModel = new NavbarViewModel();//has property PageTitle
+            NavbarViewModel.Rooms = _context.Rooms.ToList();
+            this.ViewData["NavbarViewModel"] = this.NavbarViewModel;
             return View();
         }
 
