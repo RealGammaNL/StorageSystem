@@ -70,13 +70,13 @@
                         {
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">@Model.selectedRoom.Name</a>
                         }
-                        <select class="dropdown-menu" id="roomDropdown">
+                        <div class="dropdown-menu" id="roomDropdown">
                             @foreach (Room room in Model.Rooms)
                             {
-                                @* <a class="dropdown-item nav-link" id="dropdown-item-@room.Id" value="@room.Id" asp-area="" asp-controller="" asp-action="Index" asp-route-id="@room.Id">@room.Name</a> *@
-                                <option class="dropdown-item nav-link" id="dropdown-item-@room.Id" value="@room.Id">@room.Name</option>
+                                <a class="dropdown-item nav-link" id="dropdown-item-@room.Id" value="@room.Id" asp-area="" asp-controller="@ViewContext.RouteData.Values["Controller"]" asp-action="Index" asp-route-id="@room.Id">@room.Name</a>
+                                @* <option class="dropdown-item nav-link" id="dropdown-item-@room.Id" value="@room.Id">@room.Name</option> *@
                             }
-                        </select>
+                        </div>
                     </li>
                  
                     @if (User.Identity.IsAuthenticated)
@@ -97,7 +97,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
+@*     <script>
         $(document).ready(function () {
             $('#roomDropdown').change(function () {
                 var selectedRoomId = $(this).val();
@@ -107,7 +107,7 @@
                 window.location.href = newUrl;
             });
         });
-    </script>
+    </script> *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
