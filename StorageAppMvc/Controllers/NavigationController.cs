@@ -19,17 +19,21 @@ namespace StorageAppMvc.Controllers
         }
 
         // GET: NavigationController
-        public async Task<ActionResult> Index(int? id, int? RoomId)
+        public async Task<ActionResult> Index(int? id, int? roomid)
         {
             ItemViewModel itemViewModel = new ItemViewModel();
 
-            if (RoomId != null) 
+            if (roomid != null) 
             {
                 var itemList = _context.Items.ToList();
-                List<Container> containerList = await GetContainersFromApi(RoomId);
+                List<Container> containerList = await GetContainersFromApi(roomid);
 
                 itemViewModel.Items = itemList;
-                itemViewModel.Containers = containerList;
+
+                foreach(Container container in containerList)
+                {
+                    itemViewModel.Containers.Add(container);
+                }
 
                 if (id != null)
                 {
@@ -53,7 +57,7 @@ namespace StorageAppMvc.Controllers
 
             foreach (Room room in NavbarViewModel.Rooms)
             {
-                if (room.Id == RoomId)
+                if (room.Id == roomid)
                 {
                     NavbarViewModel.selectedRoom = room;
                     break;

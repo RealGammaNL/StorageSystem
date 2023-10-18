@@ -18,13 +18,13 @@ namespace StorageAppMvc.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index(int roomid)
         {
             //var itemList = _context.Items.ToList();
 
             // Make an HTTP request to your API to get items and containers
             var apiItems = await GetItemsFromApi();
-            var containerList = await GetContainersFromApi(id);
+            var containerList = await GetContainersFromApi(roomid);
 
             ItemViewModel itemViewModel = new ItemViewModel();
 
@@ -39,7 +39,7 @@ namespace StorageAppMvc.Controllers
 
             itemViewModel.Items = apiItems;
             itemViewModel.Containers = containerList;
-            itemViewModel.RoomId = id;
+            itemViewModel.RoomId = roomid;
 
 
             this.NavbarViewModel = new NavbarViewModel();//has property PageTitle
@@ -47,7 +47,7 @@ namespace StorageAppMvc.Controllers
 
             foreach(Room room in NavbarViewModel.Rooms)
             {
-                if (room.Id == id)
+                if (room.Id == roomid)
                 {
                     NavbarViewModel.selectedRoom = room;
                     break;
@@ -90,7 +90,7 @@ namespace StorageAppMvc.Controllers
                 {
                     var content = await response.Content.ReadAsStringAsync();
                     var room = JsonConvert.DeserializeObject<Room>(content);
-                    if (room.Containers.Any())
+                    if (room != null && room.Containers.Count() != 0)
                     {
                         return room.Containers;
                     }
@@ -146,7 +146,7 @@ namespace StorageAppMvc.Controllers
             _context.Update(container);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", new { id = RoomId });
+            return RedirectToAction("Index", new { roomid = RoomId });
         }
 
         [HttpPost]

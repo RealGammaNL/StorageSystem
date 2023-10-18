@@ -21,7 +21,7 @@
 </form>
 
 <div class="Container-Boxes">
-    @if (Model.Containers.Any())
+    @if (Model.Containers.Count() != 0)
     {
         @foreach (var container in Model.Containers)
         {

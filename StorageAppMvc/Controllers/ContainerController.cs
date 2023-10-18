@@ -33,7 +33,7 @@ namespace StorageAppMvc.Controllers
             _context.Add(container);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Item", new { id = RoomId});
+            return RedirectToAction("Index", "Item", new { roomid = RoomId});
         }
 
         [HttpPost]
