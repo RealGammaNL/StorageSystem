@@ -30,7 +30,7 @@ namespace StorageAppMvc.Controllers
         //    _logger = logger;
         //}
 
-
+        //[AllowAnonymous] // uncomment to disable login
         public IActionResult Index()
         {
             this.NavbarViewModel = new NavbarViewModel();//has property PageTitle
