@@ -33,11 +33,11 @@ namespace StorageAppMvc.Controllers
             _context.Add(container);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Item", new { roomid = RoomId});
+            return RedirectToAction("Index", "Item", new { id = RoomId});
         }
 
         [HttpPost]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int? id, int RoomId)
         {
             Container container = _context.Containers.First(c => c.Id == id); // Find the container that is has this Id
             List<Item> items = _context.Items.Where(i => i.ContainerId == id).ToList(); // Search for all items that have the same ContainerId as the container, put them in a list
@@ -51,10 +51,10 @@ namespace StorageAppMvc.Controllers
             _context.Remove(container); 
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Item");
+            return RedirectToAction("Index", "Item", new { id = RoomId });
         }
 
-        public IActionResult Edit(string Name, string Desc, int id)
+        public IActionResult Edit(string Name, string Desc, int id, int RoomId)
         {
             Container container = _context.Containers.First(c => c.Id == id);
             container.Name = Name;
@@ -63,7 +63,7 @@ namespace StorageAppMvc.Controllers
             _context.Update(container);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Item");
+            return RedirectToAction("Index", "Item", new { id = RoomId });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

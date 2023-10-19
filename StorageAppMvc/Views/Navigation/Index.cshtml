@@ -3,17 +3,21 @@
 }
 @model ItemViewModel;
 
-<form class="Hidden-Forms" action="@Url.Action("Index", "Navigation", new { id = @Model.tableSelectedContainer })">
+<form class="Hidden-Forms" action="@Url.Action("Index", "Navigation")">
+    <input type="number" name="id" value="@Model.RoomId" />
+    <input type="number" name="containerId" value="@Model.tableSelectedContainer" />
     <input type="submit" id="ReloadPage" />
 </form>
 
 <form method="post" class="Hidden-Forms" action="@Url.Action("Delete", "Navigation")">
-    <input type="number" name="id" id="tableDeleteId"/>
+    <input type="number" name="RoomId" value="@Model.RoomId" />
+    <input type="number" name="ItemId" id="tableDeleteId"/>
     <input type="number" name="ContainerId" id="tableDeleteContainerId" />
     <input type="submit" id="tableDeleteButton" />
 </form>
 
 <form method="post" class="Hidden-Forms" action="@Url.Action("AddItemToContainer", "Navigation")" > 
+    <input type="number" name="RoomId" value="@Model.RoomId" />
     <input type="number" name="ItemId" id="tableItemId" />
     <input type="number" name="ContainerId" id="tableAddContainerId"/>
     <input type="submit" id="tableSubmitItemToContainer"/>
@@ -25,8 +29,9 @@
     {
         @foreach (var container in Model.Containers)
         {
-            <form method="post" action="@Url.Action("Index", "Navigation")">
-                <input type="hidden" id="@container.Id" name="id" value="@container.Id" />
+            <form method="get" action="@Url.Action("Index", "Navigation",  new { id = @Model.RoomId })">
+                <input type="hidden" id="@Model.RoomId" name="id" value="@Model.RoomId" />
+                <input type="hidden" id="@container.Id" name="containerId" value="@container.Id" />
                 @if (container.Id == Model.tableSelectedContainer)
                 {
                     <input type="submit" id="Submit-@container.Id" value="@container.Name" class="Container-Button Navigation-Container-Selected hidden" />
@@ -74,7 +79,8 @@
                             <td>
                                 <label id="Label-Name-@item.Id" value="@item.Name">@item.Name</label>
                                 <input type="number" name="id" value="@item.Id" class="hidden"/>
-                                <input type="number" name="containerId" value="@item.ContainerId" class="hidden" />
+                                <input type="number" name="RoomId" value="@Model.RoomId" class="hidden" />
+                                <input type="number" name="ContainerId" value="@item.ContainerId" class="hidden" />
                                 <input type="text" id="Input-Name-@item.Id" class="hidden" name="Name"/>
                             </td>
                             <td>

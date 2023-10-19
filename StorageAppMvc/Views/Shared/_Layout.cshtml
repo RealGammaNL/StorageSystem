@@ -31,10 +31,10 @@
                         @if (Model.selectedRoom != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link" action="@Url.Action("Index", "Item", new { id = Model.selectedRoom.Id })">New Components</a>
+                                <a class="nav-link" asp-area="" asp-controller="Item" asp-action="Index" asp-route-id="@Model.selectedRoom.Id">New Components</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" action="@Url.Action("Navigation", "Item", new { RoomId = Model.selectedRoom.Id })">Storage</a>
+                                <a class="nav-link" asp-area="" asp-controller="Navigation" asp-action="Index" asp-route-id="@Model.selectedRoom.Id">Storage</a>
                             </li>
 
                         }
@@ -74,7 +74,6 @@
                             @foreach (Room room in Model.Rooms)
                             {
                                 <a class="dropdown-item nav-link" id="dropdown-item-@room.Id" value="@room.Id" asp-area="" asp-controller="@ViewContext.RouteData.Values["Controller"]" asp-action="Index" asp-route-id="@room.Id">@room.Name</a>
-                                @* <option class="dropdown-item nav-link" id="dropdown-item-@room.Id" value="@room.Id">@room.Name</option> *@
                             }
                         </div>
                     </li>
@@ -97,17 +96,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-@*     <script>
-        $(document).ready(function () {
-            $('#roomDropdown').change(function () {
-                var selectedRoomId = $(this).val();
-                var currentUrl = window.location.href;
-                var baseUrl = currentUrl.split('?')[0]; // Remove any query string
-                var newUrl = baseUrl + '?roomid=' + selectedRoomId;
-                window.location.href = newUrl;
-            });
-        });
-    </script> *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

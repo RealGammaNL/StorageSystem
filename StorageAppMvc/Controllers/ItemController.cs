@@ -18,13 +18,24 @@ namespace StorageAppMvc.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(int roomid)
+        /// <summary>
+        /// Loads the page. Containers vary by room, items are universal.
+        /// </summary>
+        /// <param name="id">RoomId</param>
+        /// <returns></returns>
+        public async Task<IActionResult> Index(int id)
         {
             //var itemList = _context.Items.ToList();
 
+            //Automatically select the first room if nothing is selected.
+            if (id == 0)
+            {
+                id = _context.Rooms.FirstOrDefault().Id;
+            }
+
             // Make an HTTP request to your API to get items and containers
             var apiItems = await GetItemsFromApi();
-            var containerList = await GetContainersFromApi(roomid);
+            var containerList = await GetContainersFromApi(id);
 
             ItemViewModel itemViewModel = new ItemViewModel();
 
@@ -39,7 +50,7 @@ namespace StorageAppMvc.Controllers
 
             itemViewModel.Items = apiItems;
             itemViewModel.Containers = containerList;
-            itemViewModel.RoomId = roomid;
+            itemViewModel.RoomId = id;
 
 
             this.NavbarViewModel = new NavbarViewModel();//has property PageTitle
@@ -47,7 +58,7 @@ namespace StorageAppMvc.Controllers
 
             foreach(Room room in NavbarViewModel.Rooms)
             {
-                if (room.Id == roomid)
+                if (room.Id == id)
                 {
                     NavbarViewModel.selectedRoom = room;
                     break;
@@ -146,22 +157,22 @@ namespace StorageAppMvc.Controllers
             _context.Update(container);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", new { roomid = RoomId });
+            return RedirectToAction("Index", new { id = RoomId });
         }
 
         [HttpPost]
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int? id, int RoomId)
         {
             Item item = _context.Items.First(i => i.Id == id);
             _context.Remove(item);
             _context.SaveChanges();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { id = RoomId });
 
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(string Name, string Desc, int id) {
+        public async Task<IActionResult> Edit(string Name, string Desc, int id, int RoomId) {
             Item item = new Item(Name, Desc);
             item.Id = id;
 
@@ -177,7 +188,7 @@ namespace StorageAppMvc.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", new { id = RoomId });
                 }
                 else
                 {
@@ -186,10 +197,10 @@ namespace StorageAppMvc.Controllers
             }
         }
 
-        public async Task<IActionResult> SelectRoom(int id)
-        {
-            return RedirectToAction("Index");
-        }
+        //public async Task<IActionResult> SelectRoom(int id)
+        //{
+        //    return RedirectToAction("Index");
+        //}
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

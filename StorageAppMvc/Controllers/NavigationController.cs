@@ -5,6 +5,7 @@ using Domain.Data;
 using StorageAppMvc.Models;
 using Domain;
 using Newtonsoft.Json;
+using StorageSystem.Migrations;
 
 namespace StorageAppMvc.Controllers
 {
@@ -18,15 +19,39 @@ namespace StorageAppMvc.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Loads containers and items on the storage page
+        /// </summary>
+        /// <param name="id">RoomId</param>
+        /// <param name="containerId">ContainerId</param>
+        /// <returns></returns>
         // GET: NavigationController
-        public async Task<ActionResult> Index(int? id, int? roomid)
+        public async Task<ActionResult> Index(int? id, int? containerId)
         {
             ItemViewModel itemViewModel = new ItemViewModel();
 
-            if (roomid != null) 
+            //Automatically select the first ROOM if nothing is selected.
+            if (id == null)
+            {
+                id = _context.Rooms.FirstOrDefault().Id;
+            }
+
+            //Give the RoomId to the ItemViewModel.
+            itemViewModel.RoomId = id;
+
+            //Automatically select the first CONTAINER if nothing is selected.
+            if (containerId == null)
+            {
+                containerId = _context.Containers.Where(c => c.RoomId == id).FirstOrDefault().Id; 
+            }
+
+            itemViewModel.tableSelectedContainer = containerId;
+
+            //Check if there are containers
+            if (containerId != null) 
             {
                 var itemList = _context.Items.ToList();
-                List<Container> containerList = await GetContainersFromApi(roomid);
+                List<Container> containerList = await GetContainersFromApi(id);
 
                 itemViewModel.Items = itemList;
 
@@ -35,29 +60,26 @@ namespace StorageAppMvc.Controllers
                     itemViewModel.Containers.Add(container);
                 }
 
-                if (id != null)
+                if (containerId != null)
                 {
                     foreach (Container container in containerList)
                     {
-                        if (container.Id == id)
+                        if (container.Id == containerId)
                         {
                             Container containerClicked = container;
-                            List<Item> items = _context.Items.Where(i => i.ContainerId == id).ToList(); // Search for all items that have the same ContainerId as the container, put them in a list
+                            List<Item> items = _context.Items.Where(i => i.ContainerId == containerId).ToList(); // Search for all items that have the same ContainerId as the container, put them in a list
                             itemViewModel.SelectedContainerItems = items;
-                            itemViewModel.tableSelectedContainer = containerClicked.Id;
                         }
                     }
                 }
             }
-
-
 
             this.NavbarViewModel = new NavbarViewModel();//has property PageTitle
             NavbarViewModel.Rooms = _context.Rooms.ToList();
 
             foreach (Room room in NavbarViewModel.Rooms)
             {
-                if (room.Id == roomid)
+                if (room.Id == id)
                 {
                     NavbarViewModel.selectedRoom = room;
                     break;
@@ -79,7 +101,7 @@ namespace StorageAppMvc.Controllers
                 {
                     var content = await response.Content.ReadAsStringAsync();
                     var room = JsonConvert.DeserializeObject<Room>(content);
-                    if (room.Containers.Any())
+                    if (room.Containers.Count() != 0)
                     {
                         return room.Containers;
                     }
@@ -88,23 +110,37 @@ namespace StorageAppMvc.Controllers
             return new List<Container>();
         }
 
-        [HttpPost]
-        public IActionResult Index(int id)
-        {
-            ItemViewModel itemViewModel = new ItemViewModel();
+        //[HttpPost]
+        //public IActionResult Index(int id, int containerId)
+        //{
+        //    ItemViewModel itemViewModel = new ItemViewModel();
 
-            Container containerClicked = _context.Containers.FirstOrDefault(c => c.Id == id);
-            List<Item> items = _context.Items.Where(i => i.ContainerId == id).ToList(); // Search for all items that have the same ContainerId as the container, put them in a list
-            itemViewModel.SelectedContainerItems = items;
+        //    Container containerClicked = _context.Containers.FirstOrDefault(c => c.Id == containerId);
+        //    List<Item> items = _context.Items.Where(i => i.ContainerId == containerId).ToList(); // Search for all items that have the same ContainerId as the container, put them in a list
+        //    itemViewModel.SelectedContainerItems = items;
 
-            var itemList = _context.Items.ToList();
-            var containerList = _context.Containers.ToList();
-            itemViewModel.Items = itemList;
-            itemViewModel.Containers = containerList;
-            itemViewModel.tableSelectedContainer = containerClicked.Id;
+        //    var itemList = _context.Items.ToList();
+        //    var containerList = _context.Containers.ToList();
+        //    itemViewModel.Items = itemList;
+        //    itemViewModel.Containers = containerList;
+        //    itemViewModel.tableSelectedContainer = containerClicked.Id;
 
-            return View(itemViewModel);
-        }
+        //    this.NavbarViewModel = new NavbarViewModel();//has property PageTitle
+        //    NavbarViewModel.Rooms = _context.Rooms.ToList();
+
+        //    foreach (Room room in NavbarViewModel.Rooms)
+        //    {
+        //        if (room.Id == id)
+        //        {
+        //            NavbarViewModel.selectedRoom = room;
+        //            break;
+        //        }
+        //    }
+
+        //    this.ViewData["NavbarViewModel"] = this.NavbarViewModel;
+
+        //    return View(itemViewModel);
+        //}
 
         // GET: NavigationController/Details/5
         public ActionResult Details(int id)
@@ -112,19 +148,26 @@ namespace StorageAppMvc.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ItemId">ItemId</param>
+        /// <param name="RoomId">RoomId</param>
+        /// <param name="ContainerId">ContainerId</param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Delete(int id, int containerId)
+        public async Task<IActionResult> Delete(int ItemId, int RoomId, int ContainerId)
         {
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(ApiUrl);
     
                 // Send the POST request with the JSON content
-                var response = await client.DeleteAsync($"api/Item/{id}");
+                var response = await client.DeleteAsync($"api/Item/{ItemId}");
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index", new { id = containerId });
+                    return RedirectToAction("Index", new { id = RoomId, containerId = ContainerId });
                 }
                 else
                 {
@@ -135,7 +178,7 @@ namespace StorageAppMvc.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Edit(string Name, string Desc, int Quant, int id, int containerId)
+        public async Task<IActionResult> Edit(string Name, string Desc, int Quant, int id, int ContainerId, int RoomId)
         {
             Item item = new Item(Name, Desc, Quant);
             item.Id = id;
@@ -152,7 +195,7 @@ namespace StorageAppMvc.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index", new { id = containerId });
+                    return RedirectToAction("Index", new { id = RoomId, containerId = ContainerId});
                 }
                 else
                 {
@@ -162,7 +205,7 @@ namespace StorageAppMvc.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddItemToContainer(int ItemId, int ContainerId)
+        public IActionResult AddItemToContainer(int ItemId, int ContainerId, int RoomId)
         {
             Item item = _context.Items.First(i => i.Id == ItemId);
             Container container = _context.Containers.First(c => c.Id == ContainerId);
@@ -172,7 +215,7 @@ namespace StorageAppMvc.Controllers
             _context.Update(container);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", new {id = ContainerId});
+            return RedirectToAction("Index", new { id = RoomId, containerId = ContainerId });
         }
     }
 }

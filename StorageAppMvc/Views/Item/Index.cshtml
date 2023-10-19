@@ -23,16 +23,19 @@
 </form>
 
 <form method="post" class="Hidden-Forms" action="@Url.Action("Delete", "Item")">
+    <input type="hidden" name="RoomId" value="@Model.RoomId" />
     <input type="number" id="ItemIdDelete" name="id" />
     <input type="submit" id="ItemDelete" />
 </form>
 
 <form method="post" class="Hidden-Forms" action="@Url.Action("Delete", "Container")">
+    <input type="hidden" name="RoomId" value="@Model.RoomId" />
     <input type="number" id="ContainerIdDelete" name="id" />
     <input type="submit" id="ContainerDelete" />
 </form>
 
 <form method="post" class="Hidden-Forms" action="@Url.Action("Edit", "Item")">
+    <input type="hidden" name="RoomId" value="@Model.RoomId" />
     <input type="text" id="EditItemName" name="Name" />
     <input type="text" id="EditItemDesc" name="Desc" />
     <input type="number" id="EditItemId" name="id" />
@@ -40,6 +43,7 @@
 </form>
 
 <form method="post" class="Hidden-Forms" action="@Url.Action("Edit", "Container")">
+    <input type="hidden" name="RoomId" value="@Model.RoomId" />
     <input type="text" id="EditContainerName" name="Name" />
     <input type="text" id="EditContainerDesc" name="Desc" />
     <input type="number" id="EditContainerId" name="id" />
@@ -47,6 +51,7 @@
 </form>
 
 <form class="Hidden-Forms" action="@Url.Action("Index", "Item")">
+    <input type="hidden" name="RoomId" value="@Model.RoomId" />
     <input type="submit" id="ReloadPage" />
 </form>
 
@@ -84,9 +89,9 @@
             <div class="Item-Line">
                 <div class="Items-Above">
                     <div class="Item-Left">
-                        <div class="Item-Name" id="Item-Line-Item-Name-1"><input id="itemNameInput-1" name="Name" type="text"></div>
+                        <div class="Item-Name" id="Item-Line-Item-Name-1"><input id="itemNameInput-1" name="Name" type="text" placeholder="Enter Name:"></div>
                         <div>:</div>
-                        <div class="Item-Desc" id="Item-Line-Item-Desc-1"><input id="itemDescInput-1" name="Desc" type="text"></div>
+                        <div class="Item-Desc" id="Item-Line-Item-Desc-1"><input id="itemDescInput-1" name="Desc" type="text" placeholder="Enter Description:"></div>
                     </div>
                 </div>
                 <div class="Icons-Under">
@@ -145,8 +150,8 @@
                 <div class="Items-Above">
                     <div class="Container-Label">
                         <div class="Container-Left">
-                            <div class="Container-Name" id="Container-Line-Container-Name-1"><input id="containerNameInput-1" name="Name" type="text" value="Enter Name:"></div>
-                            <div class="Container-Desc" id="Container-Line-Container-Desc-1"><input id="containerDescInput-1" name="Desc" type="text" value="Enter Description:"></div>
+                            <div class="Container-Name" id="Container-Line-Container-Name-1"><input id="containerNameInput-1" name="Name" type="text" placeholder="Enter Name:"></div>
+                            <div class="Container-Desc" id="Container-Line-Container-Desc-1"><input id="containerDescInput-1" name="Desc" type="text" placeholder="Enter Description:"></div>
                         </div>
                     
                         <div class="Container-Right">
