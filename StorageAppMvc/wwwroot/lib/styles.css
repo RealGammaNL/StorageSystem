@@ -297,6 +297,26 @@
     display:flex;
 }
 
+.Navbar-Right-Items-Is-Logged-In{
+    display: inline-flex;
+}
+
+.Navbar-Right-Items-Is-Logged-In > a {
+    margin-left: 20px;
+}
+
+.Navbar-Right-Items-Is-Logged-In > form {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.Navbar-Right-Items-Not-Logged-In {
+    display: inline-flex;
+}
+
+.Navbar-Right-Items-Not-Logged-In > a {
+    margin-right:20px;
+}
 
 
 

@@ -1,37 +1,25 @@
-using Microsoft.EntityFrameworkCore;
 using Domain.Data;
-using Microsoft.Extensions.Configuration;
-using Domain;
-using System.Configuration;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
-//// Add services to the container.
-//builder.Services.AddControllersWithViews();
-//builder.Services.AddDbContext<StorageDb>();
-//DbContextOptions =>
-//builder.UseSqlServer(builder.Configuration.GetConnectionString("YourConnectionString")));
-
-builder.Services.AddAuthentication(options => { options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme; })
-    .AddCookie(options => { options.LoginPath = "/account/google-login"; })
-    .AddGoogle(options =>
-
-    {
-        options.ClientId = builder.Configuration["GoogleLogin:ClientId"];
-        options.ClientSecret = builder.Configuration["GoogleLogin:ClientSecret"];
-        options.CallbackPath = "/account/google-response";
-    });
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
 
 // Add Entity Framework DbContext to the container.
 builder.Services.AddDbContext<StorageDb>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("YourConnectionString"));
 });
+
+builder.Services.AddDbContext<AuthDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("YourConnectionString"));
+});
+
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<AuthDbContext>();
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
 
 
 
@@ -50,12 +38,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
+app.MapRazorPages();
 
 app.Run();

@@ -1,5 +1,4 @@
 ﻿@using Domain;
-@* @model NavbarViewModel *@
 @{
     var Model = (NavbarViewModel)ViewBag.NavbarViewModel;
 }
@@ -23,66 +22,70 @@
     <header>
         <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
             <div class="container-fluid">
-                <div class="collapse navbar-collapse" id="navbarColor01">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        @if (Model.selectedRoom != null)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Item" asp-action="Index" asp-route-id="@Model.selectedRoom.Id">New Components</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Navigation" asp-action="Index" asp-route-id="@Model.selectedRoom.Id">Storage</a>
-                            </li>
-
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Item" asp-action="Index">New Components</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Navigation" asp-action="Index">Storage</a>
-                            </li>
-                        }
-                        @* <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Asp-Controllers</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item nav-link" asp-area="" asp-controller="Items" asp-action="Index">ASP-Items</a>
-                                <a class="dropdown-item nav-link" asp-area="" asp-controller="Containers" asp-action="Index">ASP-Containers</a>
-                            </div>
-                        </li> *@
-
-                    </ul>
-
-                    <form class="d-flex">
-                        <input class="form-control me-sm-2" type="search" placeholder="Search">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-                    </form>
-                    <li class="nav-room-item nav-item dropdown d-flex">
-                        @if (Model.selectedRoom == null)
-                        {
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Current Room</a>
-                        }
-                        @if (Model.selectedRoom != null)
-                        {
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">@Model.selectedRoom.Name</a>
-                        }
-                        <div class="dropdown-menu" id="roomDropdown">
-                            @foreach (Room room in Model.Rooms)
-                            {
-                                <a class="dropdown-item nav-link" id="dropdown-item-@room.Id" value="@room.Id" asp-area="" asp-controller="@ViewContext.RouteData.Values["Controller"]" asp-action="Index" asp-route-id="@room.Id">@room.Name</a>
-                            }
-                        </div>
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
-                 
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li class="nav-item username"><a class="nav-link">@User.Identity.Name&nbsp&nbsp&nbsp<i class="fa-regular fa-circle-user fa-lg usericon" style="color: #ffffff;"></i></a></li>
+                        if (Model != null)
+                        {
+                            @if (Model.selectedRoom != null)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Item" asp-action="Index" asp-route-id="@Model.selectedRoom.Id">New Components</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Navigation" asp-action="Index" asp-route-id="@Model.selectedRoom.Id">Storage</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Rooms" asp-action="Index">Rooms</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Item" asp-action="Index">New Components</a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Navigation" asp-action="Index">Storage</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Rooms" asp-action="Index">Rooms</a>
+                                </li>
+                            }
+                        }
                     }
-                    
+                </ul>
+                <div class="d-flex ms-auto">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (Model != null)
+                        {
+                            @*  Search bar not implemented
+                    <form class="d-flex">
+                    <input class="form-control me-sm-2" type="search" placeholder="Search">
+                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                    </form> *@
+                            <div class="nav-item dropdown nav-room-item ">
+                                @if (Model.selectedRoom == null)
+                                {
+                                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Current Room</a>
+                                }
+                                @if (Model.selectedRoom != null)
+                                {
+                                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">@Model.selectedRoom.Name</a>
+                                }
+                                <div class="dropdown-menu" id="roomDropdown">
+                                    @foreach (Room room in Model.Rooms)
+                                    {
+                                        <a class="nav-link dropdown-item" id="dropdown-item-@room.Id" value="@room.Id" asp-area="" asp-controller="@ViewContext.RouteData.Values["Controller"]" asp-action="Index" asp-route-id="@room.Id">@room.Name</a>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>

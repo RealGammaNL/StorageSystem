@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Domain;
-
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Domain.Data
 {
@@ -15,8 +15,8 @@ namespace Domain.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            //    string connection = @"Data Source=.;Database=NewWoensdagTests;Integrated Security=True;TrustServerCertificate=True;";
-            //    optionsBuilder.UseSqlServer(connection);
+            string connection = @"Data Source=.;Database=NewWoensdagTests;Integrated Security=True;TrustServerCertificate=True;";
+            optionsBuilder.UseSqlServer(connection);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

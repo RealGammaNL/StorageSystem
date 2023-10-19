@@ -4,5 +4,12 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Please select a room in your header or search directly for an item</p>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <p>Please select a room in your header or search directly for an item</p>
+    }
+    else
+    {
+        <p>Please register your account or login if you are a member of this awesome system</p>
+    }
 </div>

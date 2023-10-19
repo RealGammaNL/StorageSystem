@@ -5,92 +5,98 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Domain.Data;
 using Domain;
+using Domain.Data;
+using StorageAppMvc.Models;
 
 namespace StorageAppMvc.Controllers
 {
-    public class ContainersController : Controller
+    public class RoomsController : Controller
     {
         private readonly StorageDb _context;
+        public NavbarViewModel NavbarViewModel { get; set; }
 
-        public ContainersController(StorageDb context)
+        public RoomsController(StorageDb context)
         {
             _context = context;
         }
 
-        // GET: Containers
+        // GET: Rooms
         public async Task<IActionResult> Index()
         {
-              return _context.Containers != null ? 
-                          View(await _context.Containers.ToListAsync()) :
-                          Problem("Entity set 'StorageDb.Containers'  is null.");
+            this.NavbarViewModel = new NavbarViewModel();//has property PageTitle
+            NavbarViewModel.Rooms = _context.Rooms.ToList();
+            this.ViewData["NavbarViewModel"] = this.NavbarViewModel;
+
+            return _context.Rooms != null ?
+                          View(await _context.Rooms.ToListAsync()) :
+                          Problem("Entity set 'StorageDb.Rooms'  is null.");
         }
 
-        // GET: Containers/Details/5
+        // GET: Rooms/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Containers == null)
+            if (id == null || _context.Rooms == null)
             {
                 return NotFound();
             }
 
-            var container = await _context.Containers
+            var room = await _context.Rooms
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (container == null)
+            if (room == null)
             {
                 return NotFound();
             }
 
-            return View(container);
+            return View(room);
         }
 
-        // GET: Containers/Create
+        // GET: Rooms/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Containers/Create
+        // POST: Rooms/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,AddedOn,RoomId")] Container container)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Room room)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(container);
+                _context.Add(room);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(container);
+            return View(room);
         }
 
-        // GET: Containers/Edit/5
+        // GET: Rooms/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Containers == null)
+            if (id == null || _context.Rooms == null)
             {
                 return NotFound();
             }
 
-            var container = await _context.Containers.FindAsync(id);
-            if (container == null)
+            var room = await _context.Rooms.FindAsync(id);
+            if (room == null)
             {
                 return NotFound();
             }
-            return View(container);
+            return View(room);
         }
 
-        // POST: Containers/Edit/5
+        // POST: Rooms/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,AddedOn,RoomId")] Container container)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Room room)
         {
-            if (id != container.Id)
+            if (id != room.Id)
             {
                 return NotFound();
             }
@@ -99,12 +105,12 @@ namespace StorageAppMvc.Controllers
             {
                 try
                 {
-                    _context.Update(container);
+                    _context.Update(room);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ContainerExists(container.Id))
+                    if (!RoomExists(room.Id))
                     {
                         return NotFound();
                     }
@@ -115,49 +121,49 @@ namespace StorageAppMvc.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(container);
+            return View(room);
         }
 
-        // GET: Containers/Delete/5
+        // GET: Rooms/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Containers == null)
+            if (id == null || _context.Rooms == null)
             {
                 return NotFound();
             }
 
-            var container = await _context.Containers
+            var room = await _context.Rooms
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (container == null)
+            if (room == null)
             {
                 return NotFound();
             }
 
-            return View(container);
+            return View(room);
         }
 
-        // POST: Containers/Delete/5
+        // POST: Rooms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Containers == null)
+            if (_context.Rooms == null)
             {
-                return Problem("Entity set 'StorageDb.Containers'  is null.");
+                return Problem("Entity set 'StorageDb.Rooms'  is null.");
             }
-            var container = await _context.Containers.FindAsync(id);
-            if (container != null)
+            var room = await _context.Rooms.FindAsync(id);
+            if (room != null)
             {
-                _context.Containers.Remove(container);
+                _context.Rooms.Remove(room);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ContainerExists(int id)
+        private bool RoomExists(int id)
         {
-          return (_context.Containers?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Rooms?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
