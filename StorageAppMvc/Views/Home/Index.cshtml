@@ -3,13 +3,14 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4 Home-Welcome">Welcome</h1>
     @if (User.Identity.IsAuthenticated)
     {
-        <p>Please select a room in your header or search directly for an item</p>
+        <p class="Home-p">Create your first room in 'Rooms' to start creating containers in 'New Components'.</p>
+        <p class="Home-p">Please note: you need to create containers in 'New Components' before you can use the storage page.</p>
     }
     else
     {
-        <p>Please register your account or login if you are a member of this awesome system</p>
+        <p class="Home-p">Please register your account or login if you are already a member</p>
     }
 </div>

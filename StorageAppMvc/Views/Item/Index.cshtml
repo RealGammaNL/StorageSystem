@@ -7,7 +7,12 @@
 
 
 <h1 class="Item-Header">Create new Items or Containers</h1>
-<p>Selecting a component will highlight it, selecting an item and a container will link them together.</p>
+<p class="Home-p">Selecting an item and a container will link them together. <i class="fa-solid fa-up-down-left-right fa-sm"></i></p>
+<p class="Home-p">Removing a container with items in it will unlink the items automatically!</p>
+@if (Model.Containers.Count() == 0)
+{
+    <p class="Home-p">You haven't created any containers yet, create some to be able to use the storage page.</p>
+}
 
 @**@
 @* Hidden Forms, this is my chosen (un-official) method for communicating between Javascript and C# MVC controllers*@

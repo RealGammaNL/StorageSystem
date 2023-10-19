@@ -33,7 +33,14 @@ namespace StorageAppMvc.Controllers
             //Automatically select the first ROOM if nothing is selected.
             if (id == null)
             {
-                id = _context.Rooms.FirstOrDefault().Id;
+                if (_context.Rooms.Count() == 0)
+                {
+                    return RedirectToAction("Index", "Rooms");
+                }
+                else
+                {
+                    id = _context.Rooms.FirstOrDefault().Id;
+                }
             }
 
             //Give the RoomId to the ItemViewModel.
@@ -42,7 +49,14 @@ namespace StorageAppMvc.Controllers
             //Automatically select the first CONTAINER if nothing is selected.
             if (containerId == null)
             {
-                containerId = _context.Containers.Where(c => c.RoomId == id).FirstOrDefault().Id; 
+                if (_context.Containers.Count() == 0)
+                {
+                    return RedirectToAction("Index", "Item");
+                }
+                else
+                {
+                    containerId = _context.Containers.Where(c => c.RoomId == id).FirstOrDefault().Id;
+                }
             }
 
             itemViewModel.tableSelectedContainer = containerId;

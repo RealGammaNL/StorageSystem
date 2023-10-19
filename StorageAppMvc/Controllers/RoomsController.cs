@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Domain;
+﻿using Domain;
 using Domain.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StorageAppMvc.Models;
 
 namespace StorageAppMvc.Controllers
@@ -154,6 +149,18 @@ namespace StorageAppMvc.Controllers
             var room = await _context.Rooms.FindAsync(id);
             if (room != null)
             {
+                var containers = _context.Containers.Where(c => c.RoomId == id).ToList();
+
+                foreach (Container container in containers)
+                {
+                    var items = _context.Items.Where(i => i.ContainerId == container.Id).ToList();
+                    foreach (var item in items)
+                    {
+                        item.ContainerId = null;
+                        _context.Update(item);
+                    }
+                    _context.Remove(container);
+                }
                 _context.Rooms.Remove(room);
             }
             

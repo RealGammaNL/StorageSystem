@@ -102,8 +102,8 @@
                             <td>
                                 <button type="button" class="Icon-Button" onclick="toggleDetails(@item.Id)"><i class="fa-solid fa-circle-info fa-xl"></i></button>
                                 <button type="button" class="Icon-Button" onclick="tableMoveItem(@item.Id)"><i class="fa-solid fa-up-down-left-right fa-xl"></i></button>
-                            <button type="button" class="Icon-Button" onclick="tableItemEdit(@item.Id, @item.ContainerId)" id="tableEditIcon-@item.Id"><i class="fa-regular fa-pen-to-square fa-xl"></i></button>
-                            <button type="button" class="Icon-Button" onclick="tableItemDelete(@item.Id)" id="tableDeleteIcon-@item.Id"><i class="fa-regular fa-trash-can fa-xl"></i></button>
+                                <button type="button" class="Icon-Button" onclick="tableItemEdit(@item.Id, @item.ContainerId)" id="tableEditIcon-@item.Id"><i class="fa-regular fa-pen-to-square fa-xl"></i></button>
+                                <button type="button" class="Icon-Button" onclick="tableItemDelete(@item.Id)" id="tableDeleteIcon-@item.Id"><i class="fa-regular fa-trash-can fa-xl"></i></button>
 
                                 <button type="submit" id="tableEditCheck-@item.Id" class="hidden Icon-Button"><i class="fa-solid fa-check fa-xl"></i></button>
                                 <button type="button" id="tableEditCancel-@item.Id" onclick="document.getElementById('ReloadPage').click()" class="hidden Icon-Button"><i class="fa-solid fa-xmark fa-xl"></i></button>

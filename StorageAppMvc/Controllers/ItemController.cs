@@ -30,7 +30,14 @@ namespace StorageAppMvc.Controllers
             //Automatically select the first room if nothing is selected.
             if (id == 0)
             {
-                id = _context.Rooms.FirstOrDefault().Id;
+                if (_context.Rooms.Count() == 0)
+                {
+                    return RedirectToAction("Index", "Rooms");
+                }
+                else
+                {
+                    id = _context.Rooms.FirstOrDefault().Id;
+                }
             }
 
             // Make an HTTP request to your API to get items and containers
