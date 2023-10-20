@@ -57,16 +57,16 @@
                         }
                     }
                 </ul>
-                <div class="d-flex ms-auto">
+                <div class="d-flex ms-auto align-items-center">
                     @if (User.Identity.IsAuthenticated)
                     {
                         if (Model != null)
                         {
-                            @*  Search bar not implemented
-                    <form class="d-flex">
-                    <input class="form-control me-sm-2" type="search" placeholder="Search">
-                    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-                    </form> *@
+                            <form method="get" class="d-flex" asp-controller="Navigation" asp-action="SearchForItem">
+                                <input class="form-control me-sm-2" name="searchString" type="search" placeholder="Search for an item">
+                                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                            </form>
                             <div class="nav-item dropdown nav-room-item ">
                                 @if (Model.selectedRoom == null)
                                 {

@@ -236,17 +236,17 @@
 
 *.table > tbody > tr > td {
     color: white;
-    background-color: #3b536c;
+    background-color: #4f749b;
     padding: 20px;
 }
 
-*.table > tbody > tr > td > input{
-    color: white;
-    background-color: #3b536c;
-    border: solid;
-    border-width: 2px;
-    padding: 5px;
-}
+    *.table > tbody > tr > td > input {
+        color: white;
+        background-color: #4f749b;
+        border: solid;
+        border-width: 2px;
+        padding: 5px;
+    }
 
 *.table > tbody > tr {
     border-top: solid;
@@ -325,6 +325,10 @@
 .Home-p {
     font-size : 20px!important;
     margin:0;
+}
+
+.error-message-nav {
+    margin-top:15px !important;
 }
 
 

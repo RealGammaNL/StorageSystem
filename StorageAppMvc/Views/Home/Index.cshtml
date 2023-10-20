@@ -2,6 +2,13 @@
     ViewData["Title"] = "Home Page";
 }
 
+@if (!string.IsNullOrEmpty(Context.Request.Query["errorMessage"]))
+{
+    <div class="alert alert-danger error-message-nav">
+        @Context.Request.Query["errorMessage"]
+    </div>
+}
+
 <div class="text-center">
     <h1 class="display-4 Home-Welcome">Welcome</h1>
     @if (User.Identity.IsAuthenticated)

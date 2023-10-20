@@ -231,5 +231,45 @@ namespace StorageAppMvc.Controllers
 
             return RedirectToAction("Index", new { id = RoomId, containerId = ContainerId });
         }
+
+        /// <summary>
+        /// Searchbar functionality
+        /// </summary>
+        /// <param name="searchString">User input for what they want to find.</param>
+        /// <param name="returnUrl">The url the user came from incase nothing is found.</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> SearchForItem(string searchString, string returnUrl)
+        {
+            //Strip the searchstring from capital letters
+            searchString = searchString.ToLower();
+
+            //Find an item with the same letters as our searchstring.
+            var foundItem = await _context.Items.FirstOrDefaultAsync(item => item.Name.ToLower().Contains(searchString));
+
+            //Check if it finds anything before doing the rest.
+            if (foundItem != null)
+            {
+                var linkedContainer = await _context.Containers.FirstOrDefaultAsync(container => container.Id == foundItem.ContainerId);
+                var linkedRoomId = linkedContainer.RoomId;
+                return RedirectToAction("Index", new { id = linkedRoomId, containerId = linkedContainer.Id });
+            }
+
+            //Return an error that nothing was found.
+            else 
+            {
+                // If no item is found, give an error message to the user.
+                TempData["ErrorMessage"] = "No matching item found. Please enter a different search term.";
+
+                // Redirect the user back to the page they searched for. Add the errormessage so that can be shown on that page.
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect($"{returnUrl}?errorMessage={TempData["ErrorMessage"]}");
+                }
+
+                return RedirectToAction("Index"); // You can redirect to a different action or the same action.
+            }
+
+        }
     }
 }

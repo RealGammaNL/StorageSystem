@@ -5,6 +5,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@if (!string.IsNullOrEmpty(Context.Request.Query["errorMessage"]))
+{
+    <div class="alert alert-danger error-message-nav">
+        @Context.Request.Query["errorMessage"]
+    </div>
+}
+
 <h1>Index</h1>
 @if (Model.Count() == 0)
 {

@@ -3,6 +3,13 @@
 }
 @model ItemViewModel;
 
+@if (!string.IsNullOrEmpty(Context.Request.Query["errorMessage"]))
+{
+    <div class="alert alert-danger error-message-nav">
+        @Context.Request.Query["errorMessage"]
+    </div>
+}
+
 <form class="Hidden-Forms" action="@Url.Action("Index", "Navigation")">
     <input type="number" name="id" value="@Model.RoomId" />
     <input type="number" name="containerId" value="@Model.tableSelectedContainer" />
