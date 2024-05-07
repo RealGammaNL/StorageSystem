@@ -16,7 +16,9 @@
 
 @if (Model.Containers.Count() == 0)
 {
-    <p class="Home-p">You haven't created any containers yet, create some to be able to use the storage page.</p>
+    <div class="alert alert-danger" role="alert">
+        You haven't created any containers yet, create some to be able to use the STORAGE page.
+    </div>
 }
 else {
     <p class="Home-p">Selecting an item and a container will link them together. <i class="fa-solid fa-up-down-left-right fa-sm"></i></p>

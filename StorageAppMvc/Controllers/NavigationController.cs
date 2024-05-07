@@ -46,47 +46,57 @@ namespace StorageAppMvc.Controllers
             //Give the RoomId to the ItemViewModel.
             itemViewModel.RoomId = id;
 
-            //Automatically select the first CONTAINER if nothing is selected.
-            if (containerId == null)
+
+            if (_context.Containers.Where(c => c.RoomId == id).FirstOrDefault() != null)
             {
-                if (_context.Containers.Count() == 0)
+                //Automatically select the first CONTAINER if nothing is selected.
+                if (containerId == null)
                 {
-                    return RedirectToAction("Index", "Item");
-                }
-                else
-                {
-                    containerId = _context.Containers.Where(c => c.RoomId == id).FirstOrDefault().Id;
-                }
-            }
-
-            itemViewModel.tableSelectedContainer = containerId;
-
-            //Check if there are containers
-            if (containerId != null) 
-            {
-                var itemList = _context.Items.ToList();
-                List<Container> containerList = await GetContainersFromApi(id);
-
-                itemViewModel.Items = itemList;
-
-                foreach(Container container in containerList)
-                {
-                    itemViewModel.Containers.Add(container);
+                    if (_context.Containers.Count() == 0)
+                    {
+                        return RedirectToAction("Index", "Item");
+                    }
+                    else
+                    {
+                        containerId = _context.Containers.Where(c => c.RoomId == id).FirstOrDefault().Id;
+                    }
                 }
 
+                itemViewModel.tableSelectedContainer = containerId;
+
+                //Check if there are containers
                 if (containerId != null)
                 {
+                    var itemList = _context.Items.ToList();
+                    List<Container> containerList = await GetContainersFromApi(id);
+
+                    itemViewModel.Items = itemList;
+
                     foreach (Container container in containerList)
                     {
-                        if (container.Id == containerId)
+                        itemViewModel.Containers.Add(container);
+                    }
+
+                    if (containerId != null)
+                    {
+                        foreach (Container container in containerList)
                         {
-                            Container containerClicked = container;
-                            List<Item> items = _context.Items.Where(i => i.ContainerId == containerId).ToList(); // Search for all items that have the same ContainerId as the container, put them in a list
-                            itemViewModel.SelectedContainerItems = items;
+                            if (container.Id == containerId)
+                            {
+                                Container containerClicked = container;
+                                List<Item> items = _context.Items.Where(i => i.ContainerId == containerId).ToList(); // Search for all items that have the same ContainerId as the container, put them in a list
+                                itemViewModel.SelectedContainerItems = items;
+                            }
                         }
                     }
                 }
             }
+
+            else
+            {
+                return RedirectToAction("Index", "Item", new { id = id });
+            }
+            
 
             this.NavbarViewModel = new NavbarViewModel();//has property PageTitle
             NavbarViewModel.Rooms = _context.Rooms.ToList();
